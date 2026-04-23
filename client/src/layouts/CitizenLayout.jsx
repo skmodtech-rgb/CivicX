@@ -32,6 +32,7 @@ export default function CitizenLayout() {
           </div>
         </div>
         <div className="header-right">
+          <SOSButton />
           <button className="btn-icon theme-toggle" onClick={toggleTheme} title="Toggle theme">
             {theme === 'dark' ? <SunIcon size={20} /> : <MoonIcon size={20} />}
           </button>
@@ -84,8 +85,6 @@ export default function CitizenLayout() {
           </NavLink>
         ))}
       </nav>
-
-      <SOSButton />
     </div>
   );
 }

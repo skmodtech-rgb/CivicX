@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
@@ -9,7 +9,8 @@ export default function SOSButton() {
   const [error, setError] = useState('');
   const intervalRef = useRef(null);
 
-  const startSOS = () => {
+  const startSOS = (e) => {
+    e?.stopPropagation();
     setIsActivating(true);
     setStatus('countdown');
     setTimer(3);
@@ -35,11 +36,11 @@ export default function SOSButton() {
   const triggerSOS = async () => {
     setStatus('triggering');
     try {
-      // 1. Get Location
+      // 1. Get Location (Enhanced Accuracy)
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, { 
           enableHighAccuracy: true,
-          timeout: 5000,
+          timeout: 10000, // Increased timeout for mobile
           maximumAge: 0
         });
       });
@@ -50,16 +51,16 @@ export default function SOSButton() {
       await api.post('/sos/trigger', { lat: latitude, lng: longitude });
       
       setStatus('active');
-      // Vibration feedback
       if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
       
-      // Auto-dismiss after 5 seconds to show active state on home
       setTimeout(() => {
         setIsActivating(false);
-      }, 5000);
+        setStatus('idle');
+      }, 4000);
 
     } catch (err) {
-      setError(err.code === 1 ? 'Location permission denied.' : 'Failed to broadcast SOS.');
+      console.error('SOS Error:', err);
+      setError(err.code === 1 ? 'Location permission denied.' : 'Location fetch timed out.');
       setStatus('error');
       setTimeout(cancelSOS, 3000);
     }
@@ -67,17 +68,15 @@ export default function SOSButton() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Compact Header Button */}
       <motion.button
-        className={`sos-fab ${status === 'active' ? 'sos-active' : ''}`}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        className={`sos-header-btn ${status === 'active' ? 'active' : ''}`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={status === 'idle' ? startSOS : undefined}
       >
-        <div className="sos-ring"></div>
-        <div className="sos-inner">
-          <span className="sos-text">{status === 'active' ? 'ALERTED' : 'SOS'}</span>
-        </div>
+        <span className="sos-icon">🚨</span>
+        <span className="sos-label">{status === 'active' ? 'ALERTED' : 'SOS'}</span>
       </motion.button>
 
       {/* Activation Overlay */}
@@ -92,10 +91,10 @@ export default function SOSButton() {
             >
               {status === 'countdown' && (
                 <>
-                  <h2 className="sos-title">Triggering Emergency SOS</h2>
+                  <h2 className="sos-title">Triggering SOS</h2>
                   <div className="sos-timer">{timer}</div>
-                  <p className="sos-sub">Broadcasting location to responders and emergency contacts.</p>
-                  <button className="sos-cancel" onClick={cancelSOS}>Tap to Cancel</button>
+                  <p className="sos-sub">Notifying emergency responders...</p>
+                  <button className="sos-cancel" onClick={cancelSOS}>Cancel</button>
                 </>
               )}
 
@@ -103,16 +102,15 @@ export default function SOSButton() {
                 <>
                   <div className="sos-spinner">📡</div>
                   <h2 className="sos-title">Broadcasting...</h2>
-                  <p className="sos-sub">Capturing live GPS coordinates and notifying contacts.</p>
+                  <p className="sos-sub">Capturing high-accuracy GPS coordinates.</p>
                 </>
               )}
 
               {status === 'active' && (
                 <>
                   <div className="sos-success">🚨</div>
-                  <h2 className="sos-title">Help is on the way!</h2>
-                  <p className="sos-sub">Your emergency signal has been received. Stay where you are.</p>
-                  <div className="sos-contacts-alert">Contacts Notified ✅</div>
+                  <h2 className="sos-title">Help is coming!</h2>
+                  <p className="sos-sub">Location broadcasted to Admin Dashboard.</p>
                 </>
               )}
 
@@ -129,42 +127,32 @@ export default function SOSButton() {
       </AnimatePresence>
 
       <style>{`
-        .sos-fab {
-          position: fixed; bottom: 90px; right: 20px; z-index: 2000;
-          width: 72px; height: 72px; border-radius: 50%; padding: 0;
-          background: #EF4444; color: white; display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 8px 32px rgba(239, 68, 68, 0.5); border: 4px solid rgba(255,255,255,0.2);
+        .sos-header-btn {
+          display: flex; align-items: center; gap: 8px;
+          background: #EF4444; color: white; padding: 6px 14px;
+          border-radius: 12px; border: none; font-weight: 800; font-size: 13px;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); transition: all 0.2s;
         }
-        .sos-active { background: #000; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
-        .sos-inner { position: relative; z-index: 2; font-weight: 900; font-size: 16px; letter-spacing: 0.05em; }
-        .sos-ring {
-          position: absolute; inset: -4px; border-radius: 50%;
-          border: 4px solid #EF4444; animation: sos-pulse 2s infinite; opacity: 0.6;
-        }
-        @keyframes sos-pulse {
-          0% { transform: scale(1); opacity: 0.6; }
-          100% { transform: scale(1.5); opacity: 0; }
-        }
-
+        .sos-header-btn.active { background: #000; box-shadow: none; }
+        .sos-header-btn .sos-icon { font-size: 14px; }
+        
         .sos-overlay {
-          position: fixed; inset: 0; background: rgba(239, 68, 68, 0.95);
-          display: flex; align-items: center; justify-content: center; z-index: 5000; padding: 24px;
+          position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+          display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 24px;
           color: white; text-align: center;
         }
-        .sos-modal { display: flex; flex-direction: column; align-items: center; gap: 24px; }
-        .sos-title { font-size: 28px; font-weight: 800; }
-        .sos-timer { font-size: 120px; font-weight: 900; line-height: 1; }
-        .sos-sub { font-size: 16px; opacity: 0.9; max-width: 300px; line-height: 1.4; }
+        .sos-modal { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .sos-title { font-size: 24px; font-weight: 800; }
+        .sos-timer { font-size: 80px; font-weight: 900; color: #EF4444; }
+        .sos-sub { font-size: 14px; opacity: 0.7; max-width: 240px; }
         .sos-cancel {
-          background: white; color: #EF4444; padding: 16px 40px; border-radius: 40px;
-          font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
-          margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+          background: #333; color: white; padding: 12px 32px; border-radius: 12px;
+          font-weight: 700; border: 1px solid #444; margin-top: 10px;
         }
-        .sos-spinner { font-size: 60px; animation: bounce 1s infinite; }
-        .sos-success, .sos-error { font-size: 80px; }
-        .sos-contacts-alert { background: rgba(0,0,0,0.2); padding: 8px 16px; border-radius: 8px; font-weight: 700; margin-top: 12px; }
+        .sos-spinner { font-size: 40px; animation: bounce 1s infinite; }
+        .sos-success, .sos-error { font-size: 60px; }
 
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
       `}</style>
     </>
   );

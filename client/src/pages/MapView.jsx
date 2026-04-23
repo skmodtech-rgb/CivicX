@@ -60,6 +60,7 @@ export default function MapView() {
   const [flyTo, setFlyTo] = useState(null);
   const [userPos, setUserPos] = useState(null);
   const [clickPos, setClickPos] = useState(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
   const navigate = useNavigate();
 
   // Filters state
@@ -152,7 +153,24 @@ export default function MapView() {
   };
 
   const handleMyLocation = () => {
-    if (userPos) setFlyTo(userPos);
+    if (!navigator.geolocation) return alert('Geolocation not supported');
+    
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        const pos = [p.coords.latitude, p.coords.longitude];
+        setUserPos(pos);
+        setFlyTo(pos);
+        setLoadingLocation(false);
+      },
+      (err) => {
+        console.error('Location error:', err);
+        setLoadingLocation(false);
+        alert('Could not get precise location. Using last known or default.');
+        if (userPos) setFlyTo(userPos);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const handleReportFromMap = () => {
@@ -377,10 +395,18 @@ export default function MapView() {
         <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <button 
             onClick={handleMyLocation}
-            style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--color-primary)', border: 'none', color: '#000', fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            disabled={loadingLocation}
+            style={{ 
+              width: 44, height: 44, borderRadius: '50%', 
+              background: 'var(--color-primary)', border: 'none', 
+              color: '#000', fontSize: 20, cursor: 'pointer', 
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4)', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              animation: loadingLocation ? 'spin 1s infinite linear' : 'none'
+            }}
             title="My Location"
           >
-            🎯
+            {loadingLocation ? '⌛' : '🎯'}
           </button>
         </div>
 
@@ -404,6 +430,10 @@ export default function MapView() {
           z-index: 1;
         }
         .filter-scroll::-webkit-scrollbar { display: none; }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
         @keyframes pulse {
           0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
           70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
