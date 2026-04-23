@@ -91,13 +91,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /api/auth/me
-router.get('/me', auth, async (req, res) => {
+// PATCH /api/auth/profile
+router.patch('/profile', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
-    res.json({ user });
+    const { name, avatar } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (name) user.name = name;
+    if (avatar) user.avatar = avatar;
+
+    await user.save();
+    res.json({ message: 'Profile updated!', user: { ...user.toObject(), password: Array(user.password.length).fill('*').join('') } });
   } catch (error) {
-    res.status(500).json({ message: 'Server error.' });
+    res.status(500).json({ message: error.message });
   }
 });
 
