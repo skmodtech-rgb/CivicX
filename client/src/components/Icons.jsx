@@ -86,7 +86,7 @@ export const BrainIcon = (props) => (
 );
 
 export const SunIcon = (props) => (
-  <IconBase {...props}>
+  <IconBase color="#fff" {...props}>
     <circle cx="12" cy="12" r="4" />
     <path d="M12 2v2" />
     <path d="M12 20v2" />

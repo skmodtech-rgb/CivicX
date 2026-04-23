@@ -40,7 +40,7 @@ export default function AdminHotspots() {
         <>
           <div style={{ height: 450, borderRadius: 16, overflow: 'hidden', border: '1px solid var(--color-border)', marginBottom: 20 }}>
             <MapContainer center={center} zoom={12} style={{ height: '100%', width: '100%' }} zoomControl={false}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="CivicX AI" />
+              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution="&copy; CartoDB" />
               {hotspots.map((h, i) => (
                 <CircleMarker key={i} center={[h.lat, h.lng]}
                   radius={Math.min(h.count * 5, 30)}
