@@ -1,16 +1,28 @@
 const express = require('express');
+const multer = require('multer');
 const Complaint = require('../models/Complaint');
 const User = require('../models/User');
 const { auth } = require('../middleware/auth');
-const { analyzeComplaint } = require('../services/aiEngine');
+const { analyzeComplaint, verifyImage } = require('../services/aiEngine');
 const stringSimilarity = require('string-similarity');
 
 const router = express.Router();
 
-// POST /api/complaints — Submit a new complaint
-router.post('/', auth, async (req, res) => {
+// Multer config: store in memory (base64 for hackathon demo)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/heic'];
+    cb(null, allowed.includes(file.mimetype));
+  }
+});
+
+// POST /api/complaints — Submit a new complaint with optional images
+router.post('/', auth, upload.array('photos', 5), async (req, res) => {
   try {
-    const { title, description, category, location, images } = req.body;
+    const { title, description, category, location: locationStr, images: imageUrls } = req.body;
+    const location = typeof locationStr === 'string' ? JSON.parse(locationStr) : locationStr;
 
     if (!title || !description) {
       return res.status(400).json({ message: 'Title and description are required.' });
@@ -51,6 +63,69 @@ router.post('/', auth, async (req, res) => {
     // AI Analysis
     const aiAnalysis = await analyzeComplaint(title, description);
 
+    // Process uploaded images
+    let processedImages = [];
+    let imageVerification = {
+      required: aiAnalysis.imageRequired || false,
+      verified: false,
+      results: [],
+      overallVerdict: 'pending'
+    };
+
+    // Handle file uploads (multipart)
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const base64 = file.buffer.toString('base64');
+        const dataUri = `data:${file.mimetype};base64,${base64}`;
+        processedImages.push(dataUri);
+
+        // AI Image Verification
+        const verification = await verifyImage(base64, file.mimetype);
+        imageVerification.results.push({
+          imageUrl: dataUri.substring(0, 50) + '...',
+          isAIGenerated: verification.isAIGenerated,
+          confidenceScore: verification.confidenceScore,
+          analysisDetails: verification.details
+        });
+      }
+      imageVerification.verified = true;
+    }
+    // Handle base64 string images (from camera capture)
+    else if (imageUrls && imageUrls.length > 0) {
+      const imgs = Array.isArray(imageUrls) ? imageUrls : [imageUrls];
+      for (const img of imgs) {
+        processedImages.push(img);
+        // Extract base64 data for verification
+        const matches = img.match(/^data:(.+);base64,(.+)$/);
+        if (matches) {
+          const verification = await verifyImage(matches[2], matches[1]);
+          imageVerification.results.push({
+            imageUrl: img.substring(0, 50) + '...',
+            isAIGenerated: verification.isAIGenerated,
+            confidenceScore: verification.confidenceScore,
+            analysisDetails: verification.details
+          });
+        }
+      }
+      imageVerification.verified = true;
+    }
+
+    // Determine overall verdict
+    if (!imageVerification.verified && !aiAnalysis.imageRequired) {
+      imageVerification.overallVerdict = 'not_required';
+    } else if (imageVerification.results.length > 0) {
+      const fakeCount = imageVerification.results.filter(r => r.isAIGenerated).length;
+      if (fakeCount === 0) imageVerification.overallVerdict = 'authentic';
+      else if (fakeCount < imageVerification.results.length) imageVerification.overallVerdict = 'suspicious';
+      else imageVerification.overallVerdict = 'fake';
+    }
+
+    // Calculate fraud score
+    let fraudScore = 0;
+    if (imageVerification.overallVerdict === 'fake') fraudScore += 60;
+    else if (imageVerification.overallVerdict === 'suspicious') fraudScore += 30;
+    if (aiAnalysis.imageRequired && processedImages.length === 0) fraudScore += 20;
+
     const complaint = new Complaint({
       user: req.user._id,
       title,
@@ -58,19 +133,21 @@ router.post('/', auth, async (req, res) => {
       category: aiAnalysis.category || category || 'other',
       urgency: aiAnalysis.priority || 'medium',
       location: location || { type: 'Point', coordinates: [0, 0] },
-      images: images || [],
-      aiAnalysis
+      images: processedImages,
+      imageVerification,
+      aiAnalysis,
+      fraudScore: Math.min(fraudScore, 100)
     });
 
     await complaint.save();
 
-    // Award points: 50 for submission + 20 if images
+    // Award points: 50 for submission + 20 if images, penalize if fake
     const user = await User.findById(req.user._id);
     let totalAwarded = 50;
     user.awardPoints(50);
     user.complaintsSubmitted += 1;
 
-    if (images && images.length > 0) {
+    if (processedImages.length > 0 && imageVerification.overallVerdict !== 'fake') {
       user.awardPoints(20);
       totalAwarded += 20;
     }
@@ -91,13 +168,19 @@ router.post('/', auth, async (req, res) => {
       pointsAwarded: totalAwarded,
       newLevel: user.level,
       newTier: user.tier,
-      newPoints: user.points
+      newPoints: user.points,
+      imageVerification: {
+        verdict: imageVerification.overallVerdict,
+        imageRequired: aiAnalysis.imageRequired,
+        results: imageVerification.results
+      }
     });
   } catch (error) {
     console.error('Submit complaint error:', error);
     res.status(500).json({ message: 'Server error submitting complaint.' });
   }
 });
+
 
 // GET /api/complaints — List all complaints
 router.get('/', async (req, res) => {

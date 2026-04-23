@@ -26,6 +26,19 @@ const complaintSchema = new mongoose.Schema({
   },
   images: [{ type: String }],
 
+  // Image Verification
+  imageVerification: {
+    required: { type: Boolean, default: false },
+    verified: { type: Boolean, default: false },
+    results: [{
+      imageUrl: String,
+      isAIGenerated: { type: Boolean, default: false },
+      confidenceScore: { type: Number, default: 0 },
+      analysisDetails: String
+    }],
+    overallVerdict: { type: String, enum: ['authentic', 'suspicious', 'fake', 'pending', 'not_required'], default: 'pending' }
+  },
+
   // AI Analysis
   aiAnalysis: {
     category: String,
