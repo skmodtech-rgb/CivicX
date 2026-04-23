@@ -1,0 +1,58 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store';
+import CitizenLayout from './layouts/CitizenLayout';
+import AdminLayout from './layouts/AdminLayout';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+import Submit from './pages/Submit';
+import ComplaintDetail from './pages/ComplaintDetail';
+import Rewards from './pages/Rewards';
+import Profile from './pages/Profile';
+import MapView from './pages/MapView';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminComplaints from './pages/admin/Complaints';
+import AdminHotspots from './pages/admin/Hotspots';
+import AdminInsights from './pages/admin/Insights';
+import AdminUsers from './pages/admin/Users';
+import AdminRedemptions from './pages/admin/Redemptions';
+
+function ProtectedRoute({ children, adminOnly = false }) {
+  const user = useAuthStore((s) => s.user);
+  if (!user) return <Navigate to="/login" replace />;
+  if (adminOnly && user.role !== 'admin') return <Navigate to="/" replace />;
+  return children;
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Citizen Routes */}
+        <Route path="/" element={<ProtectedRoute><CitizenLayout /></ProtectedRoute>}>
+          <Route index element={<Home />} />
+          <Route path="submit" element={<Submit />} />
+          <Route path="complaint/:id" element={<ComplaintDetail />} />
+          <Route path="rewards" element={<Rewards />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="map" element={<MapView />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="complaints" element={<AdminComplaints />} />
+          <Route path="hotspots" element={<AdminHotspots />} />
+          <Route path="insights" element={<AdminInsights />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="redemptions" element={<AdminRedemptions />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
