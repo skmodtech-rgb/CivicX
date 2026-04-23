@@ -18,6 +18,7 @@ import AdminUsers from './pages/admin/Users';
 import AdminRedemptions from './pages/admin/Redemptions';
 import AdminSOS from './pages/admin/SOS';
 import Emergency from './pages/Emergency';
+import ActivityCenter from './pages/ActivityCenter';
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const user = useAuthStore((s) => s.user);
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="map" element={<MapView />} />
           <Route path="emergency" element={<Emergency />} />
+          <Route path="activity" element={<ActivityCenter />} />
         </Route>
 
         {/* Admin Routes */}

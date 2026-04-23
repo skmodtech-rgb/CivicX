@@ -22,6 +22,12 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
+      <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+        <button className="btn btn-secondary w-full" style={{ background: 'var(--color-surface)' }} onClick={() => navigate('/activity')}>
+          📊 View Activity & Leaderboard
+        </button>
+      </div>
+
       <motion.div className="card card-lg text-center" initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} style={{ marginBottom:20 }}>
         <div style={{ width:72, height:72, borderRadius:'50%', background:`linear-gradient(135deg, var(--color-primary), #15803d)`,
           display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, fontWeight:800, color:'#000', margin:'0 auto 12px' }}>
