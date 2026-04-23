@@ -69,7 +69,7 @@ export default function ComplaintDetail() {
           }}
         />
         
-        <div style={{ position: 'relative', zIndex: 2, padding: '24px 20px', backdropFilter: 'blur(3px)', background: 'rgba(0,0,0,0.2)' }}>
+        <div style={{ position: 'relative', zIndex: 2, padding: '24px 20px', background: 'linear-gradient(to top, rgba(18,18,18,0.9) 0%, rgba(18,18,18,0.6) 50%, rgba(18,18,18,0.3) 100%)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom: 12 }}>
             <span className={`badge badge-${c.status}`} style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>{c.status?.replace('_', ' ')}</span>
             <span className={`badge badge-${c.urgency}`} style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>{c.urgency}</span>
