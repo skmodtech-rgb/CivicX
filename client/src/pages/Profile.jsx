@@ -116,6 +116,15 @@ export default function Profile() {
               </div>
               <div className="form-group">
                 <label className="micro">Profile Image</label>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                  <input 
+                    className="input" 
+                    placeholder="https://images..."
+                    value={editForm.avatar} 
+                    onChange={e => setEditForm({...editForm, avatar: e.target.value})}
+                    style={{ flex: 1 }}
+                  />
+                </div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   <input 
                     type="file" 
@@ -128,7 +137,7 @@ export default function Profile() {
                     📷 Upload Image
                   </label>
                   {editForm.avatar && (
-                    <div style={{ width: 36, height: 36, borderRadius: 8, overflow: 'hidden' }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, overflow: 'hidden', flexShrink: 0 }}>
                       <img src={editForm.avatar} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   )}

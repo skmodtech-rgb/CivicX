@@ -136,7 +136,7 @@ export default function Home() {
 
         .complaint-card { position:relative; overflow:hidden; padding: 0; min-height: 200px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.1); }
         .complaint-card:hover { transform:translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.6); border-color: var(--color-primary); }
-        .cc-content { padding: 32px 16px 16px; display: flex; flex-direction: column; flex: 1; z-index: 2; position: relative; }
+        .cc-content { padding: 32px 16px 16px; display: flex; flex-direction: column; flex: 1; z-index: 2; position: relative; backdrop-filter: blur(3px); background: rgba(0,0,0,0.2); }
         .cc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
         .cc-category { display:flex; align-items:center; gap:6px; }
         .cc-title { margin-bottom:4px; font-size:16px; color: #fff; }
