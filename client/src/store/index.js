@@ -22,10 +22,10 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  register: async (name, email, password) => {
+  register: async (name, email, password, role = 'citizen', department = null) => {
     set({ loading: true, error: null });
     try {
-      const { data } = await api.post('/auth/register', { name, email, password });
+      const { data } = await api.post('/auth/register', { name, email, password, role, department });
       localStorage.setItem('civicx_token', data.token);
       localStorage.setItem('civicx_user', JSON.stringify(data.user));
       set({ user: data.user, token: data.token, loading: false });

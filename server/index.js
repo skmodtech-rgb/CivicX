@@ -43,10 +43,11 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/rewards', rewardRoutes);
+app.use('/api/rewards', require('./routes/rewards'));
 app.use('/api/sos', sosRoutes);
-app.use('/api/activity', activityRoutes);
-app.use('/api/learning', learningRoutes);
+app.use('/api/activity', require('./routes/activity'));
+app.use('/api/learning', require('./routes/learning'));
+app.use('/api/official', require('./routes/official'));
 
 // ─── Health Check ────────────────────────────────────────
 app.get('/api/health', (req, res) => {

@@ -153,7 +153,7 @@ export default function ActivityCenter() {
                       transition={{ delay: i * 0.05 }}
                     >
                       <div className={`feed-icon ${item.type}`}>
-                        {item.type === 'complaint' ? '📋' : item.type === 'resolution' ? '✅' : item.type === 'badge' ? '🎖️' : '🎁'}
+                        {item.type === 'complaint' ? '📋' : item.type === 'resolution' ? '✅' : item.type === 'badge' ? '🎖️' : item.type === 'learning' ? '🎓' : '🎁'}
                       </div>
                       <div className="feed-info">
                         <p className="feed-title">{item.title}</p>

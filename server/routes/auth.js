@@ -8,7 +8,7 @@ const router = express.Router();
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role, department } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'All fields are required.' });
@@ -19,7 +19,13 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'An account with this email already exists.' });
     }
 
-    const user = new User({ name, email: email.toLowerCase(), password });
+    const user = new User({ 
+      name, 
+      email: email.toLowerCase(), 
+      password,
+      role: role || 'citizen',
+      department: department || null
+    });
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -31,6 +37,7 @@ router.post('/register', async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        department: user.department,
         points: user.points,
         totalPointsEarned: user.totalPointsEarned,
         level: user.level,
@@ -75,6 +82,8 @@ router.post('/login', async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        department: user.department,
+        avatar: user.avatar,
         points: user.points,
         totalPointsEarned: user.totalPointsEarned,
         level: user.level,

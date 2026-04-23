@@ -7,14 +7,27 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('citizen');
+  const [department, setDepartment] = useState('');
   const { register, loading, error, clearError } = useAuthStore();
   const navigate = useNavigate();
+
+  const departments = [
+    'Waste Management',
+    'Public Works',
+    'Electricity Board',
+    'Water & Sewage',
+    'Traffic Police',
+    'Police / Environment',
+    'Health & Safety'
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(name, email, password);
-      navigate('/');
+      const data = await register(name, email, password, role, role === 'official' ? department : null);
+      if (data.user.role === 'official') navigate('/official');
+      else navigate('/');
     } catch {}
   };
 
@@ -48,6 +61,24 @@ export default function Register() {
             <input id="register-password" type="password" className="input" placeholder="Min. 6 characters"
               value={password} onChange={(e) => { setPassword(e.target.value); clearError(); }} required minLength={6} />
           </div>
+
+          <div className="form-group">
+            <label className="micro text-muted">Account Type</label>
+            <select className="input" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="citizen">Citizen</option>
+              <option value="official">Government Official</option>
+            </select>
+          </div>
+
+          {role === 'official' && (
+            <div className="form-group">
+              <label className="micro text-muted">Department</label>
+              <select className="input" value={department} onChange={(e) => setDepartment(e.target.value)} required>
+                <option value="">Select Department</option>
+                {departments.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+          )}
 
           {error && <p className="text-error" style={{ fontSize: 13 }}>{error}</p>}
 

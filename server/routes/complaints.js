@@ -125,6 +125,21 @@ router.post('/', auth, upload.array('photos', 5), async (req, res) => {
     if (imageVerification.overallVerdict === 'fake') fraudScore += 60;
     else if (imageVerification.overallVerdict === 'suspicious') fraudScore += 30;
     if (aiAnalysis.imageRequired && processedImages.length === 0) fraudScore += 20;
+    
+    // Department Mapping
+    const deptMap = {
+      'garbage': 'Waste Management',
+      'pothole': 'Public Works',
+      'streetlight': 'Electricity Board',
+      'electrical': 'Electricity Board',
+      'water': 'Water & Sewage',
+      'sewage': 'Water & Sewage',
+      'noise': 'Police / Environment',
+      'encroachment': 'Traffic Police',
+      'traffic': 'Traffic Police',
+      'other': 'Other'
+    };
+    const department = deptMap[aiAnalysis.category || category] || 'Other';
 
     const complaint = new Complaint({
       user: req.user._id,
@@ -136,6 +151,7 @@ router.post('/', auth, upload.array('photos', 5), async (req, res) => {
       images: processedImages,
       imageVerification,
       aiAnalysis,
+      department,
       fraudScore: Math.min(fraudScore, 100)
     });
 

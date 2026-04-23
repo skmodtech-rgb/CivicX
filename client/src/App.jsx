@@ -4,6 +4,8 @@ import CitizenLayout from './layouts/CitizenLayout';
 import AdminLayout from './layouts/AdminLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import OfficialLayout from './layouts/OfficialLayout';
+import OfficialDashboard from './pages/OfficialDashboard';
 import Home from './pages/Home';
 import Submit from './pages/Submit';
 import ComplaintDetail from './pages/ComplaintDetail';
@@ -22,10 +24,11 @@ import ActivityCenter from './pages/ActivityCenter';
 import LearningHub from './pages/LearningHub';
 import LessonDetail from './pages/LessonDetail';
 
-function ProtectedRoute({ children, adminOnly = false }) {
+function ProtectedRoute({ children, adminOnly = false, officialOnly = false }) {
   const user = useAuthStore((s) => s.user);
   if (!user) return <Navigate to="/login" replace />;
   if (adminOnly && user.role !== 'admin') return <Navigate to="/" replace />;
+  if (officialOnly && user.role !== 'official' && user.role !== 'admin') return <Navigate to="/" replace />;
   return children;
 }
 
@@ -59,6 +62,11 @@ export default function App() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="redemptions" element={<AdminRedemptions />} />
           <Route path="sos" element={<AdminSOS />} />
+        </Route>
+
+        {/* Official Routes */}
+        <Route path="/official" element={<ProtectedRoute officialOnly><OfficialLayout /></ProtectedRoute>}>
+          <Route index element={<OfficialDashboard />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

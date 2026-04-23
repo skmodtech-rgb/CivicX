@@ -4,6 +4,7 @@ const { auth } = require('../middleware/auth');
 const Complaint = require('../models/Complaint');
 const User = require('../models/User');
 const Redemption = require('../models/Redemption');
+const LearningProgress = require('../models/LearningProgress');
 
 // ─── Global Activity ─────────────────────────────────────
 // @route   GET /api/activity/global
@@ -73,7 +74,21 @@ router.get('/me', auth, async (req, res) => {
       });
     });
 
-    // Add Milestone events (Mocked from current user state for demo)
+    // 4. Add Learning Progress events
+    const progress = await LearningProgress.findOne({ user: userId });
+    if (progress) {
+      progress.completedQuizzes.forEach(q => {
+        feed.push({
+          type: 'learning',
+          title: `Mastered Topic: ${q.topicId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`,
+          date: q.passedAt,
+          points: 15,
+          id: `quiz-${q.topicId}`
+        });
+      });
+    }
+
+    // 5. Add Milestone events (Mocked from current user state for demo)
     const user = await User.findById(userId);
     user.badges.forEach(b => {
       feed.push({

@@ -61,9 +61,23 @@ const complaintSchema = new mongoose.Schema({
   upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
-  // Admin fields
-  assignedTo: { type: String, default: '' },
+  // Admin & Department assignment
+  department: { 
+    type: String, 
+    enum: ['Waste Management', 'Public Works', 'Electricity Board', 'Water & Sewage', 'Traffic Police', 'Police / Environment', 'Health & Safety', 'Other'],
+    default: 'Other'
+  },
+  assignedOfficial: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   adminNotes: { type: String, default: '' },
+  
+  // Official Resolution Proof
+  officialResolution: {
+    description: String,
+    imageUrl: String,
+    submittedAt: Date,
+    verifiedByAdmin: { type: Boolean, default: false }
+  },
+  
   resolvedAt: { type: Date }
 }, { timestamps: true });
 
