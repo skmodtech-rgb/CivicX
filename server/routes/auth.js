@@ -24,7 +24,8 @@ router.post('/register', async (req, res) => {
       email: email.toLowerCase(), 
       password,
       role: role || 'citizen',
-      department: department || null
+      department: department || null,
+      isApproved: role === 'official' ? false : true
     });
     await user.save();
 
@@ -69,8 +70,10 @@ router.post('/login', async (req, res) => {
     }
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    
+    if (user.role === 'official' && !user.isApproved) {
+      return res.status(403).json({ message: 'Your official account is pending administrator approval.' });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });

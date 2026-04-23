@@ -62,13 +62,23 @@ export default function Login() {
           {error && <p className="text-error" style={{ fontSize: 13 }}>{error}</p>}
 
           <button id="login-submit" type="submit" className="btn btn-primary w-full" disabled={loading}>
-            {loading ? '⏳ Authenticating...' : '🔐 Access Terminal'}
+            {loading ? '⏳ Verifying...' : '🚀 Sign In'}
           </button>
         </form>
 
-        <p className="auth-footer text-muted" style={{ marginTop: 24, textAlign: 'center', fontSize: 14 }}>
-          New citizen? <Link to="/register" className="text-primary-brand" style={{ fontWeight: 700 }}>Create Account</Link>
-        </p>
+        <div className="auth-footer" style={{ marginTop: 24, textAlign: 'center' }}>
+          <p style={{ fontSize: 14 }} className="text-muted">
+            New here? <Link to="/register" className="text-primary-brand" style={{ fontWeight: 700 }}>Join CivicX</Link>
+          </p>
+          
+          <div style={{ margin: '20px 0', height: 1, background: 'var(--color-border)', position: 'relative' }}>
+            <span style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'var(--color-bg-base)', padding: '0 10px', fontSize: 10, textTransform: 'uppercase', opacity: 0.5 }}>OR</span>
+          </div>
+
+          <Link to="/authority-login" className="btn btn-secondary w-full" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 13 }}>
+            🏛️ Government Official Portal
+          </Link>
+        </div>
       </motion.div>
 
       <style>{`

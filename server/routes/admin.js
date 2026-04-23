@@ -316,4 +316,19 @@ router.post('/users/:id/award-points', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/users/:id/approve — Approve a government official
+router.post('/users/:id/approve', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    user.isApproved = true;
+    await user.save();
+    
+    res.json({ message: `Official account for ${user.name} approved!`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

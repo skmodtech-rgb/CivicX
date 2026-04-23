@@ -32,6 +32,16 @@ export default function AdminUsers() {
     }
   };
 
+  const handleApprove = async (userId) => {
+    try {
+      await api.post(`/admin/users/${userId}/approve`);
+      alert('Official account approved!');
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Approval failed');
+    }
+  };
+
   const tierColors = { bronze:'#CD7F32', silver:'#C0C0C0', gold:'#FFD700', platinum:'#E5E4E2' };
 
   if (loading) return <div className="text-center text-muted" style={{ padding:60 }}><div className="animate-spin" style={{ fontSize:32 }}>⚙️</div><p style={{ marginTop:12 }}>Loading Citizens...</p></div>;
@@ -79,9 +89,16 @@ export default function AdminUsers() {
                   </div>
                 </td>
                 <td style={{ padding: 16 }}>
-                  <span className={`badge ${u.role === 'admin' ? 'badge-danger' : 'badge-info'}`}>
-                    {u.role.toUpperCase()}
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <span className={`badge ${u.role === 'admin' ? 'badge-danger' : u.role === 'official' ? 'badge-primary' : 'badge-info'}`}>
+                      {u.role.toUpperCase()}
+                    </span>
+                    {u.role === 'official' && (
+                      <span className={`micro ${u.isApproved ? 'text-success' : 'text-warning'}`} style={{ fontWeight: 700 }}>
+                        {u.isApproved ? '● VERIFIED' : '● PENDING'}
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td style={{ padding: 16 }}>
                   <div style={{ fontSize: 13 }}>Level {u.level}</div>
@@ -94,13 +111,24 @@ export default function AdminUsers() {
                   {new Date(u.createdAt).toLocaleDateString()}
                 </td>
                 <td style={{ padding: 16, textAlign: 'right' }}>
-                  <button 
-                    className="btn btn-sm btn-primary"
-                    onClick={() => handleAwardPoints(u._id, u.name)}
-                    style={{ padding: '4px 8px', fontSize: '11px' }}
-                  >
-                    🎁 Award
-                  </button>
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                    {u.role === 'official' && !u.isApproved && (
+                      <button 
+                        className="btn btn-sm btn-success"
+                        onClick={() => handleApprove(u._id)}
+                        style={{ padding: '4px 8px', fontSize: '11px' }}
+                      >
+                        ✅ Approve
+                      </button>
+                    )}
+                    <button 
+                      className="btn btn-sm btn-primary"
+                      onClick={() => handleAwardPoints(u._id, u.name)}
+                      style={{ padding: '4px 8px', fontSize: '11px' }}
+                    >
+                      🎁 Award
+                    </button>
+                  </div>
                 </td>
               </motion.tr>
             ))}

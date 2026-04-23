@@ -4,6 +4,8 @@ import CitizenLayout from './layouts/CitizenLayout';
 import AdminLayout from './layouts/AdminLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AuthorityLogin from './pages/AuthorityLogin';
+import AuthorityRegister from './pages/AuthorityRegister';
 import OfficialLayout from './layouts/OfficialLayout';
 import OfficialDashboard from './pages/OfficialDashboard';
 import Home from './pages/Home';
@@ -38,6 +40,8 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/authority-login" element={<AuthorityLogin />} />
+        <Route path="/authority-register" element={<AuthorityRegister />} />
 
         {/* Citizen Routes */}
         <Route path="/" element={<ProtectedRoute><CitizenLayout /></ProtectedRoute>}>
