@@ -11,7 +11,8 @@ import './AdminLayout.css';
 const sidebarItems = [
   { path: '/admin', icon: <DashboardIcon size={18} />, label: 'Dashboard', end: true },
   { path: '/admin/complaints', icon: <ClipboardIcon size={18} />, label: 'Complaints' },
-  { path: '/admin/users', icon: <span style={{fontSize:16, lineHeight:1}}>👥</span>, label: 'Users' },
+  { path: '/admin/users', icon: <span style={{fontSize:16, lineHeight:1}}>👥</span>, label: 'Citizens' },
+  { path: '/admin/authorities', icon: <span style={{fontSize:16, lineHeight:1}}>🏛️</span>, label: 'Authorities' },
   { path: '/admin/redemptions', icon: <span style={{fontSize:16, lineHeight:1}}>🎁</span>, label: 'Redemptions' },
   { path: '/admin/hotspots', icon: <FlameIcon size={18} />, label: 'Hotspots' },
   { path: '/admin/insights', icon: <BrainIcon size={18} />, label: 'Insights' },
@@ -41,7 +42,7 @@ export default function AdminLayout() {
           <img src="/CivicX_logo.png" alt="CivicX" className="no-dim" style={{ width: 32, height: 32, borderRadius: 8 }} />
           <h2 className="brand-text" style={{ fontSize: 20 }}>CivicX<span className="text-primary-brand">AI</span></h2>
         </div>
-        <button className="btn-icon" onClick={() => setMobileMenuOpen(true)}>
+        <button className="btn-icon mobile-menu-toggle" onClick={() => setMobileMenuOpen(true)}>
           <span style={{ fontSize: 20 }}>☰</span>
         </button>
       </div>

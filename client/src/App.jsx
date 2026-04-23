@@ -19,6 +19,7 @@ import AdminComplaints from './pages/admin/Complaints';
 import AdminHotspots from './pages/admin/Hotspots';
 import AdminInsights from './pages/admin/Insights';
 import AdminUsers from './pages/admin/Users';
+import AdminAuthorities from './pages/admin/Authorities';
 import AdminRedemptions from './pages/admin/Redemptions';
 import AdminSOS from './pages/admin/SOS';
 import Emergency from './pages/Emergency';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="hotspots" element={<AdminHotspots />} />
           <Route path="insights" element={<AdminInsights />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="authorities" element={<AdminAuthorities />} />
           <Route path="redemptions" element={<AdminRedemptions />} />
           <Route path="sos" element={<AdminSOS />} />
         </Route>

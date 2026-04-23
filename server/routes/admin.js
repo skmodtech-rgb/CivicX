@@ -238,10 +238,12 @@ router.get('/insights', adminAuth, async (req, res) => {
   }
 });
 
-// GET /api/admin/users — List all users for admin management
+// GET /api/admin/users — List users by role
 router.get('/users', adminAuth, async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort('-createdAt');
+    const { role } = req.query;
+    const filter = role ? { role } : {};
+    const users = await User.find(filter).select('-password').sort('-createdAt');
     res.json({ users });
   } catch (error) {
     res.status(500).json({ message: 'Server error.' });
