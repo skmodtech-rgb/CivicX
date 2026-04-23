@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store';
+import api from '../services/api';
 
 export default function LearningHub() {
   const navigate = useNavigate();
@@ -12,15 +13,15 @@ export default function LearningHub() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch('/api/learning/modules', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).then(r => r.json()).then(res => {
-      setData(res);
-      setLoading(false);
-    }).catch(e => {
-      console.error(e);
-      setLoading(false);
-    });
+    api.get('/learning/modules')
+      .then(res => {
+        setData(res.data);
+        setLoading(false);
+      })
+      .catch(e => {
+        console.error(e);
+        setLoading(false);
+      });
   }, [token]);
 
   if (loading) {

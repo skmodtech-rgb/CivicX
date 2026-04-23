@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store';
+import api from '../services/api';
 
 export default function LessonDetail() {
   const { id } = useParams();
@@ -18,10 +19,9 @@ export default function LessonDetail() {
   const [submittingQuiz, setSubmittingQuiz] = useState(false);
 
   useEffect(() => {
-    fetch('/api/learning/modules', { headers: { 'Authorization': `Bearer ${token}` } })
-      .then(r => r.json())
+    api.get('/learning/modules')
       .then(res => {
-        const mod = res.modules.find(m => m.id === id);
+        const mod = res.data.modules.find(m => m.id === id);
         if (mod) {
           setLesson(mod);
           if (mod.isCompleted && !mod.quizPassed) {
@@ -39,11 +39,7 @@ export default function LessonDetail() {
   const handleMarkComplete = async () => {
     setCompleting(true);
     try {
-      const res = await fetch(`/api/learning/complete/${id}`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const { data } = await api.post(`/learning/complete/${id}`);
       if (data.success) {
         setLesson(prev => ({ ...prev, isCompleted: true }));
         if (data.user) {
@@ -65,12 +61,7 @@ export default function LessonDetail() {
     setSubmittingQuiz(true);
     try {
       const answerArray = lesson.quiz.map((q, i) => answers[i]);
-      const res = await fetch(`/api/learning/quiz/${id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ answers: answerArray })
-      });
-      const data = await res.json();
+      const { data } = await api.post(`/learning/quiz/${id}`, { answers: answerArray });
       setQuizResult(data);
       if (data.passed && data.rewardPoints > 0) {
         setLesson(prev => ({ ...prev, quizPassed: true }));
