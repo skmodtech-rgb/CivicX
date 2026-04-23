@@ -15,6 +15,11 @@ const User = require('./models/User');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ─── Root Message ────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.send('<h1>🏛️ CivicX AI API</h1><p>Status: Operational</p><p>Health Check: <a href="/api/health">/api/health</a></p>');
+});
+
 // ─── Security ────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
