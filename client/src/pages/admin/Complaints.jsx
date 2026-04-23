@@ -50,7 +50,10 @@ export default function AdminComplaints() {
       });
 
       if (response.ok) {
+        // Update DB
+        await api.patch(`/complaints/${complaint._id}/notify`);
         alert('📧 Authority notified and user confirmation sent via CivicX Automation!');
+        fetchAll();
       } else {
         alert('❌ Failed to trigger automation.');
       }

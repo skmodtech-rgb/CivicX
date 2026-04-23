@@ -75,7 +75,10 @@ export default function OfficialDashboard() {
       });
 
       if (response.ok) {
+        // Update DB
+        await api.patch(`/complaints/${task._id}/notify`);
         alert('📧 Notification sent to department and citizen via CivicX Automation!');
+        fetchTasks();
       } else {
         alert('❌ Automation trigger failed.');
       }

@@ -46,6 +46,7 @@ router.get('/me', auth, async (req, res) => {
         type: 'complaint',
         title: c.title,
         status: c.status,
+        notifiedAuthority: c.notifiedAuthority,
         date: c.createdAt,
         points: 50, // Standard points for reporting
         id: c._id

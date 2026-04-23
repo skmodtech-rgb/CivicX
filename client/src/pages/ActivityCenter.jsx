@@ -157,7 +157,12 @@ export default function ActivityCenter() {
                       </div>
                       <div className="feed-info">
                         <p className="feed-title">{item.title}</p>
-                        <p className="micro text-muted">{new Date(item.date).toLocaleDateString()} • {new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <p className="micro text-muted">{new Date(item.date).toLocaleDateString()} • {new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                          {item.notifiedAuthority && (
+                            <span className="badge badge-success" style={{ fontSize: 8, padding: '2px 6px', borderRadius: 4 }}>📧 Notified Authority</span>
+                          )}
+                        </div>
                       </div>
                       {item.points !== undefined && (
                         <div className={`feed-points ${item.points > 0 ? 'plus' : 'minus'}`}>

@@ -310,4 +310,21 @@ router.get('/user/mine', auth, async (req, res) => {
   }
 });
 
+// PATCH /api/complaints/:id/notify — Mark as notified (Official/Admin only)
+router.patch('/:id/notify', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin' && req.user.role !== 'official') {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+    const complaint = await Complaint.findById(req.params.id);
+    if (!complaint) return res.status(404).json({ message: 'Complaint not found' });
+
+    complaint.notifiedAuthority = true;
+    await complaint.save();
+    res.json({ success: true, notifiedAuthority: true });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

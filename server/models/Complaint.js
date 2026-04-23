@@ -78,7 +78,8 @@ const complaintSchema = new mongoose.Schema({
     verifiedByAdmin: { type: Boolean, default: false }
   },
   
-  resolvedAt: { type: Date }
+  resolvedAt: { type: Date },
+  notifiedAuthority: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // 2dsphere index for geospatial queries
