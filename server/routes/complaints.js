@@ -1,0 +1,210 @@
+const express = require('express');
+const Complaint = require('../models/Complaint');
+const User = require('../models/User');
+const { auth } = require('../middleware/auth');
+const { analyzeComplaint } = require('../services/aiEngine');
+const stringSimilarity = require('string-similarity');
+
+const router = express.Router();
+
+// POST /api/complaints — Submit a new complaint
+router.post('/', auth, async (req, res) => {
+  try {
+    const { title, description, category, location, images } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({ message: 'Title and description are required.' });
+    }
+
+    // Duplicate detection: 500m radius, 48 hours
+    if (location?.coordinates?.[0] && location?.coordinates?.[1]) {
+      const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+      const nearbyComplaints = await Complaint.find({
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: location.coordinates
+            },
+            $maxDistance: 500
+          }
+        },
+        createdAt: { $gte: fortyEightHoursAgo },
+        status: { $nin: ['resolved', 'rejected'] }
+      }).limit(10);
+
+      for (const existing of nearbyComplaints) {
+        const similarity = stringSimilarity.compareTwoStrings(
+          `${title} ${description}`.toLowerCase(),
+          `${existing.title} ${existing.description}`.toLowerCase()
+        );
+        if (similarity > 0.6) {
+          return res.status(409).json({
+            message: 'A similar issue has already been reported in this area.',
+            duplicateOf: existing._id,
+            similarity: Math.round(similarity * 100)
+          });
+        }
+      }
+    }
+
+    // AI Analysis
+    const aiAnalysis = await analyzeComplaint(title, description);
+
+    const complaint = new Complaint({
+      user: req.user._id,
+      title,
+      description,
+      category: aiAnalysis.category || category || 'other',
+      urgency: aiAnalysis.priority || 'medium',
+      location: location || { type: 'Point', coordinates: [0, 0] },
+      images: images || [],
+      aiAnalysis
+    });
+
+    await complaint.save();
+
+    // Award points: 50 for submission + 20 if images
+    const user = await User.findById(req.user._id);
+    let totalAwarded = 50;
+    user.awardPoints(50);
+    user.complaintsSubmitted += 1;
+
+    if (images && images.length > 0) {
+      user.awardPoints(20);
+      totalAwarded += 20;
+    }
+
+    // Badge: "First Report"
+    if (user.complaintsSubmitted === 1 && !user.badges.find(b => b.name === 'First Report')) {
+      user.badges.push({ name: 'First Report', icon: '🎯' });
+      user.awardPoints(75);
+      totalAwarded += 75;
+    }
+
+    await user.save();
+
+    const populated = await Complaint.findById(complaint._id).populate('user', 'name email avatar level tier');
+
+    res.status(201).json({
+      complaint: populated,
+      pointsAwarded: totalAwarded,
+      newLevel: user.level,
+      newTier: user.tier,
+      newPoints: user.points
+    });
+  } catch (error) {
+    console.error('Submit complaint error:', error);
+    res.status(500).json({ message: 'Server error submitting complaint.' });
+  }
+});
+
+// GET /api/complaints — List all complaints
+router.get('/', async (req, res) => {
+  try {
+    const { status, category, page = 1, limit = 20, sort = '-createdAt' } = req.query;
+    const filter = {};
+
+    if (status) filter.status = status;
+    if (category) filter.category = category;
+
+    const complaints = await Complaint.find(filter)
+      .populate('user', 'name email avatar level tier')
+      .sort(sort)
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await Complaint.countDocuments(filter);
+
+    res.json({
+      complaints,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get complaints error:', error);
+    res.status(500).json({ message: 'Server error fetching complaints.' });
+  }
+});
+
+// GET /api/complaints/:id — Single complaint detail
+router.get('/:id', async (req, res) => {
+  try {
+    const complaint = await Complaint.findById(req.params.id)
+      .populate('user', 'name email avatar level tier')
+      .populate('upvotes', 'name')
+      .populate('downvotes', 'name');
+
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found.' });
+    }
+
+    res.json({ complaint });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// POST /api/complaints/:id/vote — Upvote/Downvote
+router.post('/:id/vote', auth, async (req, res) => {
+  try {
+    const { type } = req.body; // 'up' or 'down'
+    const complaint = await Complaint.findById(req.params.id);
+
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found.' });
+    }
+
+    const userId = req.user._id;
+
+    if (type === 'up') {
+      // Remove from downvotes if present
+      complaint.downvotes = complaint.downvotes.filter(id => !id.equals(userId));
+
+      if (complaint.upvotes.some(id => id.equals(userId))) {
+        complaint.upvotes = complaint.upvotes.filter(id => !id.equals(userId));
+      } else {
+        complaint.upvotes.push(userId);
+        // Award voter points
+        const voter = await User.findById(userId);
+        voter.awardPoints(15);
+        await voter.save();
+      }
+    } else if (type === 'down') {
+      complaint.upvotes = complaint.upvotes.filter(id => !id.equals(userId));
+
+      if (complaint.downvotes.some(id => id.equals(userId))) {
+        complaint.downvotes = complaint.downvotes.filter(id => !id.equals(userId));
+      } else {
+        complaint.downvotes.push(userId);
+      }
+    }
+
+    await complaint.save();
+    res.json({
+      upvotes: complaint.upvotes.length,
+      downvotes: complaint.downvotes.length
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// GET /api/complaints/user/mine — User's own complaints
+router.get('/user/mine', auth, async (req, res) => {
+  try {
+    const complaints = await Complaint.find({ user: req.user._id })
+      .sort('-createdAt')
+      .populate('user', 'name email avatar level tier');
+
+    res.json({ complaints });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+module.exports = router;
