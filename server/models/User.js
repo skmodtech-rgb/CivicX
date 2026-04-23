@@ -29,6 +29,13 @@ const userSchema = new mongoose.Schema({
     voucherName: String,
     pointsCost: Number,
     redeemedAt: { type: Date, default: Date.now }
+  }],
+
+  // Emergency Features
+  emergencyContacts: [{
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    relationship: { type: String }
   }]
 }, { timestamps: true });
 

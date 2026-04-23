@@ -2,13 +2,14 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, useUIStore } from '../store';
 import { HomeIcon, MapIcon, PlusIcon, TrophyIcon, UserIcon, SunIcon, MoonIcon } from '../components/Icons';
+import SOSButton from '../components/SOSButton';
 import './CitizenLayout.css';
 
 const navItems = [
   { path: '/', icon: <HomeIcon size={22} />, label: 'Home' },
   { path: '/map', icon: <MapIcon size={22} />, label: 'Map' },
   { path: '/submit', icon: <PlusIcon size={28} color="white" />, label: 'Report', isPrimary: true },
-  { path: '/rewards', icon: <TrophyIcon size={22} />, label: 'Rewards' },
+  { path: '/emergency', icon: <span style={{fontSize:22, lineHeight:1}}>🚨</span>, label: 'SOS' },
   { path: '/profile', icon: <UserIcon size={22} />, label: 'Profile' }
 ];
 
@@ -82,6 +83,8 @@ export default function CitizenLayout() {
           </NavLink>
         ))}
       </nav>
+
+      <SOSButton />
     </div>
   );
 }

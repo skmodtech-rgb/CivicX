@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const complaintRoutes = require('./routes/complaints');
 const adminRoutes = require('./routes/admin');
 const rewardRoutes = require('./routes/rewards');
+const sosRoutes = require('./routes/sos');
 const User = require('./models/User');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/rewards', rewardRoutes);
+app.use('/api/sos', sosRoutes);
 
 // ─── Health Check ────────────────────────────────────────
 app.get('/api/health', (req, res) => {

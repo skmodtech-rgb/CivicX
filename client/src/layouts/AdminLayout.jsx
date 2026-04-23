@@ -14,7 +14,8 @@ const sidebarItems = [
   { path: '/admin/users', icon: <span style={{fontSize:16, lineHeight:1}}>👥</span>, label: 'Users' },
   { path: '/admin/redemptions', icon: <span style={{fontSize:16, lineHeight:1}}>🎁</span>, label: 'Redemptions' },
   { path: '/admin/hotspots', icon: <FlameIcon size={18} />, label: 'Hotspots' },
-  { path: '/admin/insights', icon: <BrainIcon size={18} />, label: 'Insights' }
+  { path: '/admin/insights', icon: <BrainIcon size={18} />, label: 'Insights' },
+  { path: '/admin/sos', icon: <span style={{fontSize:16, lineHeight:1}}>🚨</span>, label: 'SOS Alerts' }
 ];
 
 export default function AdminLayout() {

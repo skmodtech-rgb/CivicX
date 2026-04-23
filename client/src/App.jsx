@@ -16,6 +16,8 @@ import AdminHotspots from './pages/admin/Hotspots';
 import AdminInsights from './pages/admin/Insights';
 import AdminUsers from './pages/admin/Users';
 import AdminRedemptions from './pages/admin/Redemptions';
+import AdminSOS from './pages/admin/SOS';
+import Emergency from './pages/Emergency';
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const user = useAuthStore((s) => s.user);
@@ -39,6 +41,7 @@ export default function App() {
           <Route path="rewards" element={<Rewards />} />
           <Route path="profile" element={<Profile />} />
           <Route path="map" element={<MapView />} />
+          <Route path="emergency" element={<Emergency />} />
         </Route>
 
         {/* Admin Routes */}
@@ -49,6 +52,7 @@ export default function App() {
           <Route path="insights" element={<AdminInsights />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="redemptions" element={<AdminRedemptions />} />
+          <Route path="sos" element={<AdminSOS />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

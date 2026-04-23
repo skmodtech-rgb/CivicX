@@ -89,6 +89,16 @@ export default function Profile() {
         </div>
       )}
 
+      <div className="card" style={{ marginBottom: 20, border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h3 style={{ color: '#EF4444' }}>🚨 SOS & Safety</h3>
+            <p className="micro text-muted">Manage your emergency contacts</p>
+          </div>
+          <button className="btn btn-sm btn-secondary" onClick={() => navigate('/emergency')}>Manage</button>
+        </div>
+      </div>
+
       <button className="btn btn-danger w-full" onClick={handleLogout}>🚪 Logout</button>
       <style>{`.profile-page { max-width: 500px; margin: 0 auto; }`}</style>
     </div>
