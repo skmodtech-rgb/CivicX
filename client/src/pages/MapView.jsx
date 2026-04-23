@@ -382,7 +382,7 @@ export default function MapView() {
                       </div>
                       
                       <button style={{ marginTop: 10, padding: '6px 12px', background: 'var(--color-primary)', color: '#000', border: 'none', borderRadius: 20, cursor: 'pointer', fontSize: 12, fontWeight: 700, width: '100%' }}
-                        onClick={() => navigate(`/complaint/${c._id}`)}>Open Dossier</button>
+                        onClick={() => navigate(`/complaint/${c._id}`)}>Open Report</button>
                     </div>
                   </Popup>
                 </Marker>

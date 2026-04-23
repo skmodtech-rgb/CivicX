@@ -25,7 +25,7 @@ export default function ComplaintDetail() {
     return (
       <div className="text-center text-muted" style={{ padding: 60 }}>
         <div className="animate-spin" style={{ fontSize: 32 }}>⚙️</div>
-        <p style={{ marginTop: 12 }}>Loading Dossier...</p>
+        <p style={{ marginTop: 12 }}>Loading Report...</p>
       </div>
     );
   }

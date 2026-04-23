@@ -196,7 +196,7 @@ export default function Submit() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 16 }}>
-            <button className="btn btn-primary" onClick={() => navigate(`/complaint/${result.complaint?._id}`)}>View Dossier</button>
+            <button className="btn btn-primary" onClick={() => navigate(`/complaint/${result.complaint?._id}`)}>View Report</button>
             <button className="btn btn-secondary" onClick={() => navigate('/')}>Home</button>
           </div>
         </div>
