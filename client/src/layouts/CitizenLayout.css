@@ -79,10 +79,10 @@
   left: 50%;
   transform: translateX(-50%);
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   align-items: center;
-  width: calc(100% - 32px);
-  max-width: 460px;
+  width: calc(100% - 16px);
+  max-width: 500px;
   height: 72px;
   background: rgba(18, 18, 18, 0.85);
   backdrop-filter: blur(20px);
@@ -109,7 +109,7 @@
   transition: all 0.2s;
 }
 .nav-icon { display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
-.nav-label { font-size: 10px; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.nav-label { font-size: 9px; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.02em; }
 .nav-dot {
   position: absolute;
   bottom: 6px;

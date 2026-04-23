@@ -9,6 +9,7 @@ const navItems = [
   { path: '/', icon: <HomeIcon size={22} />, label: 'Home' },
   { path: '/map', icon: <MapIcon size={22} />, label: 'Map' },
   { path: '/submit', icon: <PlusIcon size={28} color="white" />, label: 'Report', isPrimary: true },
+  { path: '/rewards', icon: <TrophyIcon size={22} />, label: 'Rewards' },
   { path: '/emergency', icon: <span style={{fontSize:22, lineHeight:1}}>🚨</span>, label: 'SOS' },
   { path: '/profile', icon: <UserIcon size={22} />, label: 'Profile' }
 ];
