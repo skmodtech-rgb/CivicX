@@ -24,13 +24,20 @@ export default function Submit() {
   const location = useLocation();
   const navState = location.state || {};
 
-  const [step, setStep] = useState(navState.lat ? 2 : 0); // Jump to location step if coming from map
+  const [step, setStep] = useState(0); // Always start at Details
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('other');
   const [lat, setLat] = useState(navState.lat || '');
   const [lng, setLng] = useState(navState.lng || '');
   const [address, setAddress] = useState(navState.lat ? 'Selected from Intelligence Map' : '');
+
+  // Auto-locate if no location provided from map
+  useEffect(() => {
+    if (!navState.lat && !lat) {
+      autoLocate();
+    }
+  }, []);
   const [photoFiles, setPhotoFiles] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [submitting, setSubmitting] = useState(false);
