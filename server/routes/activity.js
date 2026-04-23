@@ -13,7 +13,7 @@ router.get('/global', async (req, res) => {
     const latest = await Complaint.find()
       .sort({ createdAt: -1 })
       .limit(20)
-      .populate('userId', 'name avatar level tier');
+      .populate('user', 'name avatar level tier');
     
     res.json(latest);
   } catch (error) {
@@ -29,7 +29,7 @@ router.get('/me', auth, async (req, res) => {
     const userId = req.user._id;
 
     // 1. Get all complaints by user
-    const complaints = await Complaint.find({ userId })
+    const complaints = await Complaint.find({ user: userId })
       .sort({ createdAt: -1 });
 
     // 2. Get all redemptions

@@ -188,11 +188,11 @@ export default function ActivityCenter() {
                         onClick={() => navigate(`/complaint/${report._id}`)}
                       >
                         <div className="r-header">
-                          <span className="r-avatar" style={{ background: tierColors[report.userId?.tier || 'bronze'] }}>
-                            {report.userId?.name?.[0] || 'C'}
+                          <span className="r-avatar" style={{ background: tierColors[report.user?.tier || 'bronze'] }}>
+                            {report.user?.name?.[0] || 'C'}
                           </span>
                           <div>
-                            <p className="r-user">{report.userId?.name} <span className="micro text-muted">Lv.{report.userId?.level}</span></p>
+                            <p className="r-user">{report.user?.name} <span className="micro text-muted">Lv.{report.user?.level}</span></p>
                             <p className="micro text-muted">{new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                           </div>
                           <span className={`badge badge-${report.status} micro`} style={{ marginLeft: 'auto' }}>{report.status.toUpperCase()}</span>
