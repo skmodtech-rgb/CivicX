@@ -116,8 +116,8 @@ export default function AuthorityLogin() {
         .auth-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
         .auth-header p { font-size: 15px; opacity: 0.7; }
 
-        .form-group { display: flex; flexDirection: column; gap: 8px; }
-        .label-text { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); padding-left: 4px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .label-text { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); padding-left: 4px; text-align: left; }
         
         .input-premium {
           background: rgba(255, 255, 255, 0.05);

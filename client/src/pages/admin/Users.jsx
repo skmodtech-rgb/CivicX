@@ -70,12 +70,16 @@ export default function AdminUsers() {
               >
                 <td style={{ padding: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
-                      {u.avatar || '👤'}
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--color-surface)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, border: '1px solid var(--color-border)' }}>
+                      {u.avatar && (u.avatar.startsWith('http') || u.avatar.startsWith('data:image')) ? (
+                        <img src={u.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        u.avatar || '👤'
+                      )}
                     </div>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{u.name}</div>
-                      <div className="micro text-muted">{u.email}</div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>{u.name}</div>
+                      <div className="micro text-muted" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>{u.email}</div>
                     </div>
                   </div>
                 </td>
