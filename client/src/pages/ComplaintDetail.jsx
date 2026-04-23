@@ -38,18 +38,49 @@ export default function ComplaintDetail() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="detail-page">
       <button className="btn btn-ghost btn-sm" onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>← Back</button>
 
-      {/* Header */}
-      <div className="card card-lg" style={{ marginBottom: 16 }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom: 12 }}>
-          <span className={`badge badge-${c.status}`}>{c.status?.replace('_', ' ')}</span>
-          <span className={`badge badge-${c.urgency}`}>{c.urgency}</span>
-        </div>
-        <h1 style={{ fontSize: 22, marginBottom: 8 }}>{c.title}</h1>
-        <p className="text-secondary">{c.description}</p>
-        <div style={{ display:'flex', gap:16, marginTop:16 }} className="micro text-muted">
-          <span>By {c.user?.name}</span>
-          <span>Level {c.user?.level}</span>
-          <span>{new Date(c.createdAt).toLocaleDateString()}</span>
+      {/* Header with Category Background */}
+      <div 
+        className="card card-lg" 
+        style={{ 
+          marginBottom: 16, 
+          position: 'relative', 
+          overflow: 'hidden',
+          padding: 0,
+          border: '1px solid rgba(255,255,255,0.1)'
+        }}
+      >
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundImage: `url(/categories/cat_${c.category || 'other'}.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.5,
+            zIndex: 0
+          }}
+        />
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: 'linear-gradient(to top, rgba(18,18,18,1) 10%, rgba(18,18,18,0.7) 60%, transparent)',
+            zIndex: 1
+          }}
+        />
+        
+        <div style={{ position: 'relative', zIndex: 2, padding: '24px 20px' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom: 12 }}>
+            <span className={`badge badge-${c.status}`} style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>{c.status?.replace('_', ' ')}</span>
+            <span className={`badge badge-${c.urgency}`} style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>{c.urgency}</span>
+          </div>
+          <h1 style={{ fontSize: 24, marginBottom: 8, color: '#fff', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{c.title}</h1>
+          <p className="text-secondary" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)', color: '#eee' }}>{c.description}</p>
+          <div style={{ display:'flex', gap:16, marginTop:16 }} className="micro text-muted">
+            <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>By {c.user?.name}</span>
+            <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>Level {c.user?.level}</span>
+            <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{new Date(c.createdAt).toLocaleDateString()}</span>
+          </div>
         </div>
       </div>
 

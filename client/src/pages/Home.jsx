@@ -74,25 +74,27 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
               onClick={() => navigate(`/complaint/${c._id}`)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', backgroundImage: `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.7) 50%, rgba(18,18,18,0.3) 100%), url(/categories/cat_${c.category || 'other'}.png)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             >
               {c.aiAnalysis?.urgency_score >= 8 && (
                 <div className="cc-critical-ribbon animate-strobe">CRITICAL</div>
               )}
-              <div className="cc-header">
-                <div className="cc-category">
-                  <span>{categoryIcons[c.category] || '📌'}</span>
-                  <span className="micro">{c.category?.toUpperCase()}</span>
+              <div className="cc-content">
+                <div className="cc-header">
+                  <div className="cc-category">
+                    <span>{categoryIcons[c.category] || '📌'}</span>
+                    <span className="micro" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{c.category?.toUpperCase()}</span>
+                  </div>
+                  <span className={`badge badge-${c.status}`}>{c.status?.replace('_', ' ')}</span>
                 </div>
-                <span className={`badge badge-${c.status}`}>{c.status?.replace('_', ' ')}</span>
-              </div>
-              <h3 className="cc-title">{c.title}</h3>
-              <p className="body-sm text-secondary cc-desc">{c.description?.substring(0, 100)}{c.description?.length > 100 ? '...' : ''}</p>
-              <div className="cc-footer">
-                <span className="micro text-muted">by {c.user?.name || 'Anonymous'}</span>
-                <div className="cc-votes">
-                  <span className="micro text-success">▲ {c.upvotes?.length || 0}</span>
-                  <span className="micro text-error">▼ {c.downvotes?.length || 0}</span>
+                <h3 className="cc-title" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{c.title}</h3>
+                <p className="body-sm text-secondary cc-desc" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)', color: '#ddd' }}>{c.description?.substring(0, 100)}{c.description?.length > 100 ? '...' : ''}</p>
+                <div className="cc-footer">
+                  <span className="micro text-muted">by {c.user?.name || 'Anonymous'}</span>
+                  <div className="cc-votes">
+                    <span className="micro text-success">▲ {c.upvotes?.length || 0}</span>
+                    <span className="micro text-error">▼ {c.downvotes?.length || 0}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -132,11 +134,12 @@ export default function Home() {
           .feed-list { grid-template-columns: repeat(2, 1fr); }
         }
 
-        .complaint-card { position:relative; overflow:hidden; padding-top: 32px; }
-        .complaint-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-medium); }
+        .complaint-card { position:relative; overflow:hidden; padding: 0; min-height: 200px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.1); }
+        .complaint-card:hover { transform:translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.6); border-color: var(--color-primary); }
+        .cc-content { padding: 32px 16px 16px; display: flex; flex-direction: column; flex: 1; z-index: 2; position: relative; }
         .cc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
         .cc-category { display:flex; align-items:center; gap:6px; }
-        .cc-title { margin-bottom:4px; font-size:16px; }
+        .cc-title { margin-bottom:4px; font-size:16px; color: #fff; }
         .cc-desc { margin-bottom:12px; flex: 1; }
         .cc-footer { display:flex; justify-content:space-between; align-items:center; margin-top: auto; }
         .cc-votes { display:flex; gap:12px; }

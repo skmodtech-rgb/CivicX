@@ -12,6 +12,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', avatar: '' });
   const [saving, setSaving] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -37,6 +38,17 @@ export default function Profile() {
       alert('Failed to update profile');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditForm({ ...editForm, avatar: reader.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -72,7 +84,11 @@ export default function Profile() {
         <AnimatePresence mode="wait">
           {!isEditing ? (
             <motion.div key="view" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}>
-              <div className="profile-avatar-container" style={{ borderColor: tierColors[p.tier] }}>
+              <div 
+                className="profile-avatar-container" 
+                style={{ borderColor: tierColors[p.tier], cursor: 'pointer' }}
+                onClick={() => p.avatar && setIsLightboxOpen(true)}
+              >
                 {p.avatar ? (
                   <img src={p.avatar} alt="Avatar" className="profile-img" />
                 ) : (
@@ -99,13 +115,24 @@ export default function Profile() {
                 />
               </div>
               <div className="form-group">
-                <label className="micro">Avatar URL</label>
-                <input 
-                  className="input" 
-                  placeholder="https://images..."
-                  value={editForm.avatar} 
-                  onChange={e => setEditForm({...editForm, avatar: e.target.value})}
-                />
+                <label className="micro">Profile Image</label>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                    id="avatar-upload"
+                  />
+                  <label htmlFor="avatar-upload" className="btn btn-sm btn-secondary" style={{ cursor: 'pointer', flex: 1, textAlign: 'center' }}>
+                    📷 Upload Image
+                  </label>
+                  {editForm.avatar && (
+                    <div style={{ width: 36, height: 36, borderRadius: 8, overflow: 'hidden' }}>
+                      <img src={editForm.avatar} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  )}
+                </div>
               </div>
               <div style={{ display:'flex', gap: 8, marginTop: 16 }}>
                 <button type="button" className="btn btn-secondary w-full" onClick={() => setIsEditing(false)}>Cancel</button>
@@ -161,6 +188,28 @@ export default function Profile() {
 
       <button className="btn btn-danger w-full" onClick={handleLogout} style={{ opacity: 0.8 }}>🚪 Logout</button>
 
+      {/* Lightbox for Avatar */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div 
+            className="lightbox-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            <motion.img 
+              src={p.avatar} 
+              alt="Avatar Large"
+              className="lightbox-img"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <style>{`
         .profile-page { max-width: 500px; margin: 0 auto; padding-bottom: 40px; }
         
@@ -204,6 +253,15 @@ export default function Profile() {
         .edit-form { text-align: left; padding: 10px; }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; margin-bottom: 4px; opacity: 0.6; }
+
+        .lightbox-overlay {
+          position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px);
+          z-index: 10000; display: flex; align-items: center; justify-content: center;
+        }
+        .lightbox-img {
+          max-width: 90vw; max-height: 90vh; border-radius: 20px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain;
+        }
       `}</style>
     </div>
   );
