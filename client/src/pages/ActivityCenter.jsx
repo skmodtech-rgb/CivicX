@@ -10,12 +10,24 @@ export default function ActivityCenter() {
   const [globalData, setGlobalData] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuthStore();
+  const { user, fetchProfile } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
+    // Also refresh profile to keep stats in sync
+    fetchProfile();
   }, [activeTab]);
+
+  // Sync on window focus
+  useEffect(() => {
+    const onFocus = () => {
+      fetchData();
+      fetchProfile();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -89,22 +101,22 @@ export default function ActivityCenter() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <p className="micro text-muted">Total Points</p>
-                    <h1 className="stats-value">💎 {myData?.stats.totalPoints || 0}</h1>
+                    <h1 className="stats-value">💎 {user?.points || 0}</h1>
                   </div>
-                  <div className="badge-tier" style={{ background: tierColors[myData?.stats.tier] }}>
-                    {myData?.stats.tier.toUpperCase()}
+                  <div className="badge-tier" style={{ background: tierColors[user?.tier || 'bronze'] }}>
+                    {(user?.tier || 'bronze').toUpperCase()}
                   </div>
                 </div>
                 <div style={{ marginTop: 20 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <span className="micro">Level {myData?.stats.level}</span>
-                    <span className="micro text-muted">Next: Level {myData?.stats.level + 1}</span>
+                    <span className="micro">Level {user?.level || 1}</span>
+                    <span className="micro text-muted">Next: Level {(user?.level || 1) + 1}</span>
                   </div>
                   <div className="progress-bar-premium">
                     <motion.div 
                       className="progress-fill" 
                       initial={{ width: 0 }}
-                      animate={{ width: `${(myData?.stats.totalPoints % 500) / 5}%` }}
+                      animate={{ width: `${((user?.points || 0) % 500) / 5}%` }}
                     />
                   </div>
                 </div>

@@ -52,7 +52,8 @@ export default function Profile() {
     }
   };
 
-  const p = profile || user || {};
+  // Merge profile and user store, prioritize store for real-time points
+  const p = { ...(profile || {}), ...user };
   const tierColors = { bronze:'#CD7F32', silver:'#C0C0C0', gold:'#FFD700', platinum:'#E5E4E2' };
 
   return (
