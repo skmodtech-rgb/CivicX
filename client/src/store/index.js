@@ -51,7 +51,15 @@ export const useAuthStore = create((set, get) => ({
     set({ user: null, token: null });
   },
 
-  clearError: () => set({ error: null })
+  clearError: () => set({ error: null }),
+  
+  syncUser: (userData) => {
+    const current = get().user;
+    if (!current) return;
+    const updated = { ...current, ...userData };
+    localStorage.setItem('civicx_user', JSON.stringify(updated));
+    set({ user: updated });
+  }
 }));
 
 export const useComplaintStore = create((set) => ({
@@ -88,18 +96,8 @@ export const useComplaintStore = create((set) => ({
     } : {});
 
     // Immediately sync updated points into auth store
-    if (data.newPoints !== undefined) {
-      const stored = JSON.parse(localStorage.getItem('civicx_user') || '{}');
-      const updated = {
-        ...stored,
-        points: data.newPoints,
-        level: data.newLevel,
-        tier: data.newTier,
-        complaintsSubmitted: (stored.complaintsSubmitted || 0) + 1,
-        totalPointsEarned: (stored.totalPointsEarned || 0) + (data.pointsAwarded || 0)
-      };
-      localStorage.setItem('civicx_user', JSON.stringify(updated));
-      useAuthStore.setState({ user: updated });
+    if (data.user) {
+      useAuthStore.getState().syncUser(data.user);
     }
 
     return data;

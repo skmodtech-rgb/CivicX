@@ -1,13 +1,15 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, useUIStore } from '../store';
-import { HomeIcon, MapIcon, PlusIcon, TrophyIcon, UserIcon, SunIcon, MoonIcon, PhoneIcon } from '../components/Icons';
+import { HomeIcon, MapIcon, PlusIcon, TrophyIcon, UserIcon, SunIcon, MoonIcon, PhoneIcon, BookIcon } from '../components/Icons';
 import SOSButton from '../components/SOSButton';
 import './CitizenLayout.css';
 
 const navItems = [
   { path: '/', icon: <HomeIcon size={22} />, label: 'Home' },
   { path: '/map', icon: <MapIcon size={22} />, label: 'Map' },
+  { path: '/learning', icon: <BookIcon size={22} />, label: 'Learn' },
   { path: '/submit', icon: <PlusIcon size={28} color="white" />, label: 'Report', isPrimary: true },
   { path: '/rewards', icon: <TrophyIcon size={22} />, label: 'Rewards' },
   { path: '/emergency', icon: <PhoneIcon size={22} />, label: 'Helpline' },
@@ -16,8 +18,25 @@ const navItems = [
 
 export default function CitizenLayout() {
   const user = useAuthStore(s => s.user);
+  const fetchProfile = useAuthStore(s => s.fetchProfile);
   const { theme, toggleTheme } = useUIStore();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Sync rewards in "real-time" (periodic + focus-based)
+  useEffect(() => {
+    fetchProfile(); // Initial fetch
+    
+    const interval = setInterval(fetchProfile, 30000); // Every 30s
+    
+    const onFocus = () => fetchProfile();
+    window.addEventListener('focus', onFocus);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [fetchProfile]);
 
   return (
     <div className="citizen-layout">

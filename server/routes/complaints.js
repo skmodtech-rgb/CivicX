@@ -166,9 +166,13 @@ router.post('/', auth, upload.array('photos', 5), async (req, res) => {
     res.status(201).json({
       complaint: populated,
       pointsAwarded: totalAwarded,
-      newLevel: user.level,
-      newTier: user.tier,
-      newPoints: user.points,
+      user: {
+        points: user.points,
+        level: user.level,
+        tier: user.tier,
+        totalPointsEarned: user.totalPointsEarned,
+        complaintsSubmitted: user.complaintsSubmitted
+      },
       imageVerification: {
         verdict: imageVerification.overallVerdict,
         imageRequired: aiAnalysis.imageRequired,
