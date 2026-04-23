@@ -76,6 +76,9 @@ export default function Home() {
               onClick={() => navigate(`/complaint/${c._id}`)}
               style={{ cursor: 'pointer' }}
             >
+              {c.aiAnalysis?.urgency_score >= 8 && (
+                <div className="cc-critical-ribbon animate-strobe">CRITICAL</div>
+              )}
               <div className="cc-header">
                 <div className="cc-category">
                   <span>{categoryIcons[c.category] || '📌'}</span>
@@ -92,9 +95,6 @@ export default function Home() {
                   <span className="micro text-error">▼ {c.downvotes?.length || 0}</span>
                 </div>
               </div>
-              {c.aiAnalysis?.urgency_score >= 8 && (
-                <div className="cc-critical animate-strobe">⚠️ CRITICAL</div>
-              )}
             </motion.div>
           ))}
         </div>
@@ -102,20 +102,57 @@ export default function Home() {
 
       <style>{`
         .home-page { padding-bottom: 20px; }
-        .stats-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
-        .stats-scroll::-webkit-scrollbar { display:none; }
-        .stat-card { min-width:160px; flex-shrink:0; }
-        .feed-header { display:flex; justify-content:space-between; align-items:center; }
-        .feed-list { display:flex; flex-direction:column; gap:12px; }
-        .complaint-card { position:relative; overflow:hidden; }
-        .complaint-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-medium); }
+        .stats-scroll { 
+          display: grid; 
+          grid-template-columns: repeat(2, 1fr); 
+          gap: 12px; 
+          margin-bottom: 20px; 
+        }
+        
+        .stat-card:nth-child(3) {
+          grid-column: span 2;
+        }
+
+        @media (min-width: 768px) {
+          .stats-scroll { grid-template-columns: repeat(3, 1fr); }
+          .stat-card:nth-child(3) { grid-column: auto; }
+        }
+
+        .stat-card { padding: 16px; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+        .stat-card h2 { font-size: 20px; margin: 4px 0; }
+        .progress-bar { height: 6px; }
+        
+        .feed-list { 
+          display: grid; 
+          grid-template-columns: 1fr; 
+          gap: 16px; 
+        }
+        
+        @media (min-width: 768px) {
+          .feed-list { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .complaint-card { position:relative; overflow:hidden; padding-top: 32px; }
+        .complaint-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-medium); }
         .cc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
         .cc-category { display:flex; align-items:center; gap:6px; }
         .cc-title { margin-bottom:4px; font-size:16px; }
-        .cc-desc { margin-bottom:12px; }
-        .cc-footer { display:flex; justify-content:space-between; align-items:center; }
+        .cc-desc { margin-bottom:12px; flex: 1; }
+        .cc-footer { display:flex; justify-content:space-between; align-items:center; margin-top: auto; }
         .cc-votes { display:flex; gap:12px; }
-        .cc-critical { position:absolute; top:12px; right:12px; font-size:11px; font-weight:700; color:var(--color-error); }
+        
+        .cc-critical-ribbon { 
+          position:absolute; 
+          top: 0; 
+          left: 0; 
+          background: var(--color-error); 
+          color: white; 
+          font-size: 10px; 
+          font-weight: 800; 
+          padding: 4px 12px; 
+          border-bottom-right-radius: 12px;
+          z-index: 5;
+        }
       `}</style>
     </div>
   );
