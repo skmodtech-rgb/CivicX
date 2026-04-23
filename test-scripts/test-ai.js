@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { analyzeComplaint } = require('./services/aiEngine');
+const { analyzeComplaint } = require('../server/services/aiEngine');
 
 async function runDiagnostics() {
   console.log('\n🧠 CivicX AI Engine — Diagnostics\n');

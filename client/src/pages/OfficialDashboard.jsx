@@ -61,7 +61,7 @@ export default function OfficialDashboard() {
     try {
       const payload = {
         complaintId: task._id,
-        userEmail: task.user?.email || 'citizen@civicx.com',
+        userEmail: task.user?.email || 'No email provided',
         complaintText: task.description || task.title,
         category: task.category || department,
         priority: task.urgency,

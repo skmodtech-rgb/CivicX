@@ -36,7 +36,7 @@ export default function AdminComplaints() {
     try {
       const payload = {
         complaintId: complaint._id,
-        userEmail: complaint.user?.email || 'citizen@civicx.com',
+        userEmail: complaint.user?.email || 'No email provided',
         complaintText: complaint.description || complaint.title,
         category: complaint.category,
         priority: complaint.urgency,

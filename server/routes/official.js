@@ -26,7 +26,7 @@ router.get('/tasks', auth, isOfficial, async (req, res) => {
     const tasks = await Complaint.find({ 
       department,
       status: { $in: ['pending', 'assigned', 'in_progress'] }
-    }).sort({ createdAt: -1 }).populate('user', 'name level tier');
+    }).sort({ createdAt: -1 }).populate('user', 'name email level tier');
 
     res.json({ tasks, department });
   } catch (error) {
