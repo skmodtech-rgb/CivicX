@@ -57,6 +57,34 @@ export default function OfficialDashboard() {
     }
   };
 
+  const notifyManagement = async (task) => {
+    try {
+      const payload = {
+        complaintId: task._id,
+        userEmail: task.user?.email || 'citizen@civicx.com',
+        complaintText: task.description || task.title,
+        category: task.category || department,
+        priority: task.urgency,
+        location: task.location?.address || 'Site Location'
+      };
+
+      const response = await fetch('https://cmpunktg12.app.n8n.cloud/webhook/send-complaint-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        alert('📧 Notification sent to department and citizen via CivicX Automation!');
+      } else {
+        alert('❌ Automation trigger failed.');
+      }
+    } catch (error) {
+      console.error('Automation error:', error);
+      alert('❌ Connection error.');
+    }
+  };
+
   if (loading) return <div className="text-center" style={{ padding: 40 }}>Loading assignments...</div>;
 
   return (
@@ -128,19 +156,32 @@ export default function OfficialDashboard() {
                     </div>
                   </div>
 
-                  <div className="task-actions-area">
-                    <div className="task-previews">
-                      {task.images.slice(0, 2).map((img, i) => (
-                        <div key={i} className="preview-box">
-                          <img src={img} alt="issue" />
-                        </div>
-                      ))}
-                      {task.images.length > 2 && <div className="preview-more">+{task.images.length - 2}</div>}
+                    <div className="task-actions-area">
+                      <div className="task-previews">
+                        {task.images.slice(0, 2).map((img, i) => (
+                          <div key={i} className="preview-box">
+                            <img src={img} alt="issue" />
+                          </div>
+                        ))}
+                        {task.images.length > 2 && <div className="preview-more">+{task.images.length - 2}</div>}
+                      </div>
+                      <div style={{ display: 'flex', gap: 10 }}>
+                        <button 
+                          className="btn btn-secondary" 
+                          onClick={() => notifyManagement(task)}
+                          style={{ flex: 1, height: 48, borderRadius: 12, fontSize: 13 }}
+                        >
+                          ✉️ Notify
+                        </button>
+                        <button 
+                          className="btn btn-primary resolve-btn" 
+                          onClick={() => setSelectedTask(task)}
+                          style={{ flex: 2 }}
+                        >
+                          Resolve Task
+                        </button>
+                      </div>
                     </div>
-                    <button className="btn btn-primary resolve-btn" onClick={() => setSelectedTask(task)}>
-                      Resolve Task
-                    </button>
-                  </div>
                 </motion.div>
               ))
             )}
@@ -219,52 +260,11 @@ export default function OfficialDashboard() {
         .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .section-title { font-size: 20px; font-weight: 800; }
 
-        .task-list { display: flex; flexDirection: column; gap: 20px; }
-        .task-premium-card { 
-          display: flex; gap: 24px; padding: 24px; border-left: 6px solid #555;
-          background: rgba(255,255,255,0.02); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .task-premium-card:hover { transform: translateX(8px); background: rgba(255,255,255,0.04); }
-        .task-premium-card.critical { border-left-color: #EF4444; }
-        .task-premium-card.high { border-left-color: #F97316; }
-        .task-premium-card.medium { border-left-color: #EAB308; }
         .task-premium-card.low { border-left-color: #3B82F6; }
 
-        .task-main-info { flex: 1; }
-        .task-header-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
-        .urgency-pill { font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 4px; color: #fff; }
-        .urgency-pill.critical { background: #EF4444; }
-        .urgency-pill.high { background: #F97316; }
-        .urgency-pill.medium { background: #EAB308; }
-        .urgency-pill.low { background: #3B82F6; }
-
-        .task-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-        .task-loc { font-size: 13px; color: var(--color-primary); font-weight: 600; margin-bottom: 12px; }
-        .task-desc { font-size: 14px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        .task-meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: 16px; }
-        .user-mini { display: flex; align-items: center; gap: 8px; }
-        .avatar-mini { width: 24px; height: 24px; background: var(--color-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
-
-        .task-actions-area { width: 220px; display: flex; flexDirection: column; gap: 16px; justify-content: space-between; }
-        .task-previews { display: flex; gap: 8px; position: relative; }
-        .preview-box { width: 70px; height: 70px; border-radius: 8px; overflow: hidden; }
-        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
-        .preview-more { width: 30px; height: 70px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
-        .resolve-btn { height: 48px; border-radius: 12px; font-weight: 800; }
-
-        .modal-overlay-premium { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content-premium { width: 100%; max-width: 560px; padding: 32px; border: 1px solid var(--color-border); position: relative; overflow: hidden; }
-        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
-        .close-btn { background: none; border: none; font-size: 24px; color: var(--color-text-muted); cursor: pointer; }
-        
-        .form-group-premium { margin-bottom: 24px; }
-        .label-text { display: block; font-size: 12px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 10px; }
-        .input-premium { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--color-border); border-radius: 12px; padding: 16px; color: #fff; font-size: 15px; min-height: 120px; resize: none; transition: all 0.2s; }
-        .input-premium:focus { border-color: var(--color-primary); background: rgba(255,255,255,0.05); outline: none; }
-        
-        .upload-zone-premium { min-height: 160px; border: 2px dashed var(--color-border); border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); overflow: hidden; }
-        .upload-btn-premium { width: 100%; height: 100%; padding: 40px; display: flex; flexDirection: column; align-items: center; cursor: pointer; }
+        .task-list { display: flex; flex-direction: column; gap: 20px; }
+        .task-actions-area { width: 280px; display: flex; flex-direction: column; gap: 16px; justify-content: space-between; }
+        .upload-btn-premium { width: 100%; height: 100%; padding: 40px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .upload-icon { font-size: 32px; margin-bottom: 12px; }
         .upload-text { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
         .upload-subtext { font-size: 12px; opacity: 0.5; }

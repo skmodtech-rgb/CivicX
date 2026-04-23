@@ -32,6 +32,34 @@ export default function AdminComplaints() {
     setUpdating(null);
   };
 
+  const notifyAuthority = async (complaint) => {
+    try {
+      const payload = {
+        complaintId: complaint._id,
+        userEmail: complaint.user?.email || 'citizen@civicx.com',
+        complaintText: complaint.description || complaint.title,
+        category: complaint.category,
+        priority: complaint.urgency,
+        location: complaint.location?.address || 'City Center'
+      };
+
+      const response = await fetch('https://cmpunktg12.app.n8n.cloud/webhook/send-complaint-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        alert('📧 Authority notified and user confirmation sent via CivicX Automation!');
+      } else {
+        alert('❌ Failed to trigger automation.');
+      }
+    } catch (error) {
+      console.error('Automation error:', error);
+      alert('❌ Error connecting to automation server.');
+    }
+  };
+
   return (
     <div className="admin-complaints">
       <h1 style={{ marginBottom: 4 }}>📋 Complaint Management</h1>
@@ -67,10 +95,10 @@ export default function AdminComplaints() {
           <div className="table-header">
             <span style={{ flex:2 }}>Report</span>
             <span style={{ flex:1 }}>Category</span>
-            <span style={{ flex:1 }}>Status</span>
             <span style={{ flex:1 }}>Urgency</span>
             <span style={{ flex:1 }}>AI Score</span>
-            <span style={{ flex:1 }}>Actions</span>
+            <span style={{ flex:1 }}>Status</span>
+            <span style={{ flex:1 }}>Notify</span>
           </div>
 
           {complaints.map((c, i) => (
@@ -95,13 +123,22 @@ export default function AdminComplaints() {
                   {c.aiAnalysis?.urgency_score || '-'}/10
                 </span>
               </div>
-              <div className="data-cell" data-label="Action" style={{ flex:1 }}>
-                <select className="input" style={{ padding:'6px 8px', fontSize:11, minWidth:100 }}
+              <div className="data-cell" data-label="Status" style={{ flex:1 }}>
+                <select className="input" style={{ padding:'6px 8px', fontSize:11, minWidth:90 }}
                   value={c.status}
                   disabled={updating === c._id}
                   onChange={e => updateStatus(c._id, e.target.value)}>
                   {statusOptions.map(s => <option key={s} value={s}>{s.replace('_',' ')}</option>)}
                 </select>
+              </div>
+              <div className="data-cell" data-label="Notify" style={{ flex:1 }}>
+                <button 
+                  className="btn btn-sm btn-primary"
+                  onClick={() => notifyAuthority(c)}
+                  style={{ padding:'6px 10px', fontSize:10, background:'var(--color-primary)', border:'none' }}
+                >
+                  ✉️ Notify
+                </button>
               </div>
             </motion.div>
           ))}
