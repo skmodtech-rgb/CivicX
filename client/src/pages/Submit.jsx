@@ -124,10 +124,38 @@ export default function Submit() {
   // ─── Geolocation ─────────────────────────────────────
   const autoLocate = () => {
     if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setLat(pos.coords.latitude.toFixed(6));
-      setLng(pos.coords.longitude.toFixed(6));
-      setAddress('Current GPS Location');
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const latitude = pos.coords.latitude.toFixed(6);
+      const longitude = pos.coords.longitude.toFixed(6);
+      setLat(latitude);
+      setLng(longitude);
+      setAddress('Locating...');
+
+      try {
+        // Reverse Geocoding using Nominatim (OpenStreetMap)
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`, {
+          headers: { 'Accept-Language': 'en' }
+        });
+        const data = await response.json();
+        
+        if (data && data.display_name) {
+          // Construct a cleaner address (Landmark + Area)
+          const addr = data.address;
+          const landmark = data.name || addr.road || addr.suburb || '';
+          const area = addr.suburb || addr.neighborhood || addr.city_district || addr.city || '';
+          
+          const cleanAddress = landmark && area && landmark !== area 
+            ? `${landmark}, ${area}` 
+            : data.display_name.split(',').slice(0, 3).join(','); // Fallback to first 3 parts of full name
+          
+          setAddress(cleanAddress);
+        } else {
+          setAddress('Current GPS Location');
+        }
+      } catch (err) {
+        console.error('Geocoding error:', err);
+        setAddress('Current GPS Location');
+      }
     }, () => setError('Location access denied.'));
   };
 
