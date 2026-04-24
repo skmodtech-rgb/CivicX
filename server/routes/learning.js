@@ -11,7 +11,7 @@ const LEARNING_MODULES = [
     type: 'video',
     thumbnail: '/categories/cat_garbage.png',
     description: 'Master the art of sorting waste to enable efficient recycling and composting.',
-    videoUrl: 'https://www.youtube.com/embed/utTOMe8FkqU',
+    videoUrl: 'https://www.youtube.com/embed/6jQ7y_qQYUA',
     duration: '3 mins',
     rewardPoints: 10,
     quiz: [
@@ -26,7 +26,7 @@ const LEARNING_MODULES = [
     type: 'video',
     thumbnail: '/categories/cat_traffic.png',
     description: 'Understand basic traffic signals and pedestrian safety rules.',
-    videoUrl: 'https://www.youtube.com/embed/BVjUabjx-00',
+    videoUrl: 'https://www.youtube.com/embed/6T2-iO0_qY0',
     duration: '4 mins',
     rewardPoints: 10,
     quiz: [
@@ -116,13 +116,43 @@ const LEARNING_MODULES = [
     type: 'video',
     thumbnail: '/categories/cat_other.png',
     description: 'Self-defense awareness, legal rights, and digital safety tools.',
-    videoUrl: 'https://www.youtube.com/embed/7mRk1a0_K8I',
+    videoUrl: 'https://www.youtube.com/embed/M4_8PoRQP8w',
     duration: '6 mins',
     rewardPoints: 10,
     quiz: [
       { question: 'What is the national emergency number in many regions for women safety?', options: ['100 or 112', '911', '108', '123'], answer: '100 or 112' },
       { question: 'What should you do if you feel followed?', options: ['Go to a dark alley', 'Go to a well-lit public space', 'Run blindly', 'Ignore it'], answer: 'Go to a well-lit public space' },
       { question: 'Are SOS apps helpful?', options: ['Yes, highly', 'No', 'Only for fun', 'Sometimes'], answer: 'Yes, highly' }
+    ]
+  },
+  {
+    id: 'cyber-fraud',
+    title: 'Cyber Fraud Awareness',
+    type: 'video',
+    thumbnail: '/categories/cat_electrical.png',
+    description: 'Learn how to identify and avoid common online scams.',
+    videoUrl: 'https://www.youtube.com/embed/P_SntS_z3z0',
+    duration: '5 mins',
+    rewardPoints: 10,
+    quiz: [
+      { question: 'Should you share OTP with callers?', options: ['Yes, always', 'No, never', 'Only to banks', 'Only to police'], answer: 'No, never' },
+      { question: 'What indicates a secure website?', options: ['http://', 'https://', 'www.', '.com'], answer: 'https://' },
+      { question: 'If you win a lottery you didn\'t enter, it is likely a...', options: ['Scam', 'Miracle', 'Mistake', 'Bank error'], answer: 'Scam' }
+    ]
+  },
+  {
+    id: 'public-cleanliness',
+    title: 'Public Cleanliness',
+    type: 'video',
+    thumbnail: '/categories/cat_sewage.png',
+    description: 'The impact of littering and how to maintain clean public spaces.',
+    videoUrl: 'https://www.youtube.com/embed/kC3Gsh0uW70',
+    duration: '4 mins',
+    rewardPoints: 10,
+    quiz: [
+      { question: 'What is the main cause of choked drains?', options: ['Rain', 'Plastic litter', 'Animals', 'Leaves'], answer: 'Plastic litter' },
+      { question: 'Where should you throw wrappers while traveling?', options: ['Out the window', 'On the floor', 'Keep until you find a bin', 'Under the seat'], answer: 'Keep until you find a bin' },
+      { question: 'Who is responsible for clean streets?', options: ['Sweepers only', 'Government only', 'Every citizen', 'Nobody'], answer: 'Every citizen' }
     ]
   },
   {
