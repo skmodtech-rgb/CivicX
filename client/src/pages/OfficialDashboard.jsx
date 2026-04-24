@@ -131,54 +131,6 @@ export default function OfficialDashboard() {
     }
   };
 
-  if (loading) return <div className="text-center" style={{ padding: 40 }}>Loading assignments...</div>;
-
-  return (
-    <div className="official-dashboard-premium container">
-      <header className="dashboard-header">
-        <div className="header-text">
-          <p className="micro text-primary-brand" style={{ fontWeight: 800 }}>{department?.toUpperCase() || 'CIVIC'} DEPARTMENT</p>
-          <h1>Official Dashboard</h1>
-          <p className="text-secondary">Track performance and resolve civic assignments.</p>
-        </div>
-        <div className="header-stats">
-          <div className="stat-card glass-panel">
-            <span className="stat-icon">⭐</span>
-            <div>
-              <p className="stat-label">Total XP</p>
-              <p className="stat-value">{stats.user.points || 0}</p>
-            </div>
-          </div>
-          <div className="stat-card glass-panel">
-            <span className="stat-icon">🏆</span>
-            <div>
-              <p className="stat-label">Resolved</p>
-              <p className="stat-value">{stats.resolvedCount}</p>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Tab Navigation */}
-      <nav className="dashboard-nav">
-        {[
-          { id: 'assignments', label: '📋 Assignments', count: tasks.length },
-          { id: 'high-priority', label: '🔥 High Priority', count: tasks.filter(t => t.urgency === 'critical' || t.urgency === 'high').length },
-          { id: 'rewards', label: '🎁 Rewards', count: null },
-          { id: 'history', label: '🕒 History', count: history.length }
-        ].map(tab => (
-          <button 
-            key={tab.id}
-            className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.label}
-            {tab.count !== null && <span className="nav-count">{tab.count}</span>}
-          </button>
-        ))}
-      </nav>
-
-
   const renderContent = () => {
     switch(activeTab) {
       case 'assignments':
@@ -189,7 +141,7 @@ export default function OfficialDashboard() {
 
         return (
           <div className="task-list">
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {filteredTasks.length === 0 ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="empty-state-premium card card-lg">
                   <div className="empty-icon">🎖️</div>
@@ -305,12 +257,57 @@ export default function OfficialDashboard() {
             )}
           </div>
         );
+      default:
+        return null;
     }
   };
 
+  if (loading) return <div className="text-center" style={{ padding: 40 }}>Loading assignments...</div>;
+
   return (
     <div className="official-dashboard-premium container">
-      {/* ... header and nav already added ... */}
+      <header className="dashboard-header">
+        <div className="header-text">
+          <p className="micro text-primary-brand" style={{ fontWeight: 800 }}>{department?.toUpperCase() || 'CIVIC'} DEPARTMENT</p>
+          <h1>Official Dashboard</h1>
+          <p className="text-secondary">Track performance and resolve civic assignments.</p>
+        </div>
+        <div className="header-stats">
+          <div className="stat-card glass-panel">
+            <span className="stat-icon">⭐</span>
+            <div>
+              <p className="stat-label">Total XP</p>
+              <p className="stat-value">{stats.user.points || 0}</p>
+            </div>
+          </div>
+          <div className="stat-card glass-panel">
+            <span className="stat-icon">🏆</span>
+            <div>
+              <p className="stat-label">Resolved</p>
+              <p className="stat-value">{stats.resolvedCount}</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Tab Navigation */}
+      <nav className="dashboard-nav">
+        {[
+          { id: 'assignments', label: '📋 Assignments', count: tasks.length },
+          { id: 'high-priority', label: '🔥 High Priority', count: tasks.filter(t => t.urgency === 'critical' || t.urgency === 'high').length },
+          { id: 'rewards', label: '🎁 Rewards', count: null },
+          { id: 'history', label: '🕒 History', count: history.length }
+        ].map(tab => (
+          <button 
+            key={tab.id}
+            className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+            {tab.count !== null && <span className="nav-count">{tab.count}</span>}
+          </button>
+        ))}
+      </nav>
       
       <div className="dashboard-content">
         <div className="content-header">
