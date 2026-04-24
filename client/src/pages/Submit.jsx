@@ -30,7 +30,7 @@ export default function Submit() {
   const [category, setCategory] = useState('other');
   const [lat, setLat] = useState(navState.lat || '');
   const [lng, setLng] = useState(navState.lng || '');
-  const [address, setAddress] = useState(navState.lat ? 'Selected from Intelligence Map' : '');
+  const [address, setAddress] = useState(navState.address || (navState.lat ? 'Selected from Intelligence Map' : ''));
 
   // Auto-locate if no location provided from map
   useEffect(() => {

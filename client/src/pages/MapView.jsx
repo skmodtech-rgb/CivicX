@@ -173,8 +173,32 @@ export default function MapView() {
     );
   };
 
-  const handleReportFromMap = () => {
-    navigate('/submit', { state: { lat: clickPos[0], lng: clickPos[1] } });
+  const handleReportFromMap = async () => {
+    if (!clickPos) return;
+    
+    try {
+      // Reverse Geocoding for the pinned location
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${clickPos[0]}&lon=${clickPos[1]}&zoom=18&addressdetails=1`, {
+        headers: { 'Accept-Language': 'en' }
+      });
+      const data = await response.json();
+      let cleanAddress = 'Selected from Intelligence Map';
+      
+      if (data && data.display_name) {
+        const addr = data.address;
+        const landmark = data.name || addr.road || addr.suburb || '';
+        const area = addr.suburb || addr.neighborhood || addr.city_district || addr.city || '';
+        
+        cleanAddress = landmark && area && landmark !== area 
+          ? `${landmark}, ${area}` 
+          : data.display_name.split(',').slice(0, 3).join(',');
+      }
+      
+      navigate('/submit', { state: { lat: clickPos[0], lng: clickPos[1], address: cleanAddress } });
+    } catch (err) {
+      console.error('Geocoding error:', err);
+      navigate('/submit', { state: { lat: clickPos[0], lng: clickPos[1], address: 'Selected from Intelligence Map' } });
+    }
   };
 
   return (
