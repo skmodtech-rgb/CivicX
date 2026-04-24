@@ -19,7 +19,9 @@ export default function OfficialLayout() {
       <nav className="official-nav">
         <div className="nav-container">
           <div className="nav-brand">
-            <span className="logo-icon">🏛️</span>
+            <span className="logo-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
+            </span>
             <div>
               <span className="logo-text">CivicX</span>
               <span className="badge badge-primary micro" style={{ display: 'block', width: 'fit-content' }}>OFFICIAL</span>
@@ -31,7 +33,10 @@ export default function OfficialLayout() {
               <p className="user-name">{user?.name}</p>
               <p className="micro text-muted">{user?.department}</p>
             </div>
-            <button className="logout-btn-premium" onClick={handleLogout}>Logout</button>
+            <button className="logout-btn-premium" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Logout
+            </button>
           </div>
         </div>
       </nav>

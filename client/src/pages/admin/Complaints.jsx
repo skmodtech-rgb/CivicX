@@ -91,7 +91,10 @@ export default function AdminComplaints() {
 
   return (
     <div className="admin-complaints">
-      <h1 style={{ marginBottom: 4 }}>📋 Complaint Management</h1>
+      <h1 style={{ marginBottom: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+        Complaint Management
+      </h1>
       <p className="text-secondary body-sm" style={{ marginBottom: 24 }}>Review, assign, and resolve civic reports</p>
 
       {/* Filters */}
@@ -159,23 +162,23 @@ export default function AdminComplaints() {
                 <button 
                   className="btn btn-sm"
                   onClick={() => notifyAuthority(c)}
-                  style={{ padding:'6px 10px', fontSize:10, background:'var(--color-primary)', border:'none', color: '#000' }}
+                  style={{ padding:'6px 10px', fontSize:10, background:'var(--color-primary)', border:'none', color: '#000', display: 'flex', alignItems: 'center', gap: 4 }}
                 >
-                  ✉️ Notify
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  Notify
                 </button>
                 <button 
                   className="btn btn-sm btn-ghost"
                   onClick={() => handleDelete(c._id, c.title)}
-                  style={{ padding:'6px 10px', fontSize:10, color: 'var(--color-error)' }}
+                  style={{ padding:'6px 10px', fontSize:10, color: 'var(--color-error)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   disabled={updating === c._id}
                 >
-                  🗑️
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
                 </button>
               </div>
             </motion.div>
           ))}
         </div>
-      )
 }
 
       <style>{`
