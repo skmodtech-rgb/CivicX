@@ -126,26 +126,33 @@ router.post('/', auth, upload.array('photos', 5), async (req, res) => {
     else if (imageVerification.overallVerdict === 'suspicious') fraudScore += 30;
     if (aiAnalysis.imageRequired && processedImages.length === 0) fraudScore += 20;
     
-    // Department Mapping
+    // Department Mapping (User selection prioritized, AI fallback for 'other')
     const deptMap = {
-      'garbage': 'Waste Management',
+      'garbage': 'Municipal Board',
+      'water': 'Municipal Board',
+      'sewage': 'Municipal Board',
       'pothole': 'Public Works',
       'streetlight': 'Electricity Board',
-      'electrical': 'Electricity Board',
-      'water': 'Water & Sewage',
-      'sewage': 'Water & Sewage',
-      'noise': 'Police / Environment',
-      'encroachment': 'Traffic Police',
+      'electricity': 'Electricity Board',
       'traffic': 'Traffic Police',
+      'police': 'Police Department',
+      'fire': 'Fire Department',
       'other': 'Other'
     };
-    const department = deptMap[aiAnalysis.category || category] || 'Other';
+
+    // If user chose 'other', try to use AI category. If AI also says 'other', stay in 'Other'.
+    let finalCategory = category || 'other';
+    if (finalCategory === 'other' && aiAnalysis.category && aiAnalysis.category !== 'other') {
+      finalCategory = aiAnalysis.category;
+    }
+
+    const department = deptMap[finalCategory] || 'Other';
 
     const complaint = new Complaint({
       user: req.user._id,
       title,
       description,
-      category: aiAnalysis.category || category || 'other',
+      category: finalCategory,
       urgency: aiAnalysis.priority || 'medium',
       location: location || { type: 'Point', coordinates: [0, 0] },
       images: processedImages,

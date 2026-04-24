@@ -6,7 +6,7 @@ const complaintSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: {
     type: String,
-    enum: ['garbage', 'pothole', 'streetlight', 'water', 'sewage', 'noise', 'encroachment', 'traffic', 'electrical', 'other'],
+    enum: ['garbage', 'water', 'pothole', 'streetlight', 'sewage', 'traffic', 'electricity', 'police', 'fire', 'other'],
     default: 'other'
   },
   status: {
@@ -64,7 +64,7 @@ const complaintSchema = new mongoose.Schema({
   // Admin & Department assignment
   department: { 
     type: String, 
-    enum: ['Waste Management', 'Public Works', 'Electricity Board', 'Water & Sewage', 'Traffic Police', 'Police / Environment', 'Health & Safety', 'Other'],
+    enum: ['Municipal Board', 'Public Works', 'Electricity Board', 'Traffic Police', 'Police Department', 'Fire Department', 'Other'],
     default: 'Other'
   },
   assignedOfficial: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

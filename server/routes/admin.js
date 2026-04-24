@@ -110,6 +110,7 @@ router.put('/complaints/:id', adminAuth, async (req, res) => {
     if (status) complaint.status = status;
     if (assignedTo !== undefined) complaint.assignedTo = assignedTo;
     if (adminNotes !== undefined) complaint.adminNotes = adminNotes;
+    if (req.body.department) complaint.department = req.body.department;
 
     // If resolved, set resolvedAt and award points to reporter
     if (status === 'resolved' && !complaint.resolvedAt) {
