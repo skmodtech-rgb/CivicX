@@ -28,7 +28,7 @@ export default function Register() {
       >
         <div className="auth-header">
           <img src="/CivicX_logo.png" alt="CivicX" className="no-dim" style={{ width: 72, height: 72, margin: '0 auto 12px', borderRadius: 16 }} />
-          <h1 style={{ fontSize: 28 }}>Join CivicX<span className="text-primary-brand">AI</span></h1>
+          <h1 style={{ fontSize: 28 }}>Join CivicX</h1>
           <p className="text-secondary" style={{ marginTop: 8 }}>Become a Civic Intelligence Agent</p>
         </div>
 

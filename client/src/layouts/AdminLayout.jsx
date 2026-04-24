@@ -40,7 +40,7 @@ export default function AdminLayout() {
       <div className="mobile-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/CivicX_logo.png" alt="CivicX" className="no-dim" style={{ width: 32, height: 32, borderRadius: 8 }} />
-          <h2 className="brand-text" style={{ fontSize: 20 }}>CivicX<span className="text-primary-brand">AI</span></h2>
+          <h2 className="brand-text" style={{ fontSize: 20 }}>CivicX</h2>
         </div>
         <button className="btn-icon mobile-menu-toggle" onClick={() => setMobileMenuOpen(true)}>
           <span style={{ fontSize: 20 }}>☰</span>
@@ -55,7 +55,7 @@ export default function AdminLayout() {
         <div className="sidebar-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <img src="/CivicX_logo.png" alt="CivicX" className="no-dim" style={{ width: 36, height: 36, borderRadius: 8 }} />
-            <h2 className="brand-text">CivicX<span className="text-primary-brand">AI</span></h2>
+            <h2 className="brand-text">CivicX</h2>
           </div>
           <button className="btn-icon sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
             {sidebarOpen ? '◀' : '▶'}
