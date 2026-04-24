@@ -6,170 +6,103 @@ This document serves as the authoritative blueprint for the CivicX platform. It 
 
 ## 🎨 1. Color System
 
-CivicX uses an **Achromatic Dark/Light foundation** with a singular **Vibrant Green** brand accent.
+CivicX uses an **Achromatic Dark foundation** with **Brand Green** accents and **Vibrant Semantic** indicators.
 
-### 🟢 Brand Colors
-| Role | HEX | Usage |
+### 🌑 Dark Mode Tokens (Primary)
+| Variable | Value | Usage |
 | :--- | :--- | :--- |
-| **Primary (Brand)** | `#1ED760` | Play buttons, Active states, Primary CTAs, Key Brand Elements. |
-| **Primary Hover** | `#1DB954` | Hover states for primary green elements. |
+| `--color-bg` | `#0A0A0A` | Base app background. |
+| `--color-surface` | `#121212` | Elevated surfaces (sidebars, nav). |
+| `--color-card` | `#1E1E1E` | Main component containers. |
+| `--color-border` | `#2A2A2A` | Subtle dividers. |
+| `--color-primary` | `#1ED760` | Brand Green (Buttons, Active states). |
+| `--color-text` | `#FFFFFF` | Primary headings. |
+| `--color-text-muted` | `#B3B3B3` | Secondary text. |
 
-### 🌑 Dark Mode (Primary Theme)
-| Role | HEX | Usage |
-| :--- | :--- | :--- |
-| **Base Background** | `#0A0A0A` | Deepest layer, app background. |
-| **Secondary BG** | `#121212` | Sidebar background, secondary sections. |
-| **Surface/Card** | `#1E1E1E` | Cards, elevated panels, modal backgrounds. |
-| **Border** | `#2A2A2A` | Subtle dividers and component outlines. |
-| **Text Primary** | `#FFFFFF` | Main headings, emphasized text. |
-| **Text Secondary** | `#B3B3B3` | Body text, labels. |
-| **Text Muted** | `#737373` | Metadata, inactive icons, placeholder text. |
-
-### ☀️ Light Mode (Adaptive Theme)
-| Role | HEX | Usage |
-| :--- | :--- | :--- |
-| **Base Background** | `#F8F9FA` | Page background. |
-| **Secondary BG** | `#FFFFFF` | Secondary sections. |
-| **Surface/Card** | `#FFFFFF` | Cards, elevated panels. |
-| **Border** | `#E5E7EB` | Subtle dividers. |
-| **Text Primary** | `#111827` | Main headings. |
-| **Text Secondary** | `#4B5563` | Body text. |
-| **Text Muted** | `#9CA3AF` | Metadata. |
-
-### 🚨 Semantic & Status
-- **Success**: `#22C55E` (Resolved, Verified, +Points)
-- **Warning**: `#EAB308` (In Progress, Caution)
-- **Error/Emergency**: `#EF4444` (Critical, Rejected, Delete)
-- **Info**: `#3B82F6` (Assigned, Intelligence Hints)
+### 🚨 Semantic States
+- **Critical/Error**: `#EF4444` (SOS, Critical Urgency).
+- **Success/Resolved**: `#22C55E` (Points earned, Resolution).
+- **Warning/Pending**: `#EAB308` (Needs Attention).
+- **Info/Assigned**: `#3B82F6` (Official status).
 
 ---
 
-## 🅰️ 2. Typography
+## 📐 2. Layout & Spacing
 
-**Primary Font Family**: `Inter` (Fallback: `system-ui, sans-serif`)
-**Secondary/Display Font**: `Outfit` (for H1/H2 for a more premium look)
+### 📱 Grid System
+- **Base Unit**: 8px (All margins/padding are multiples of 8).
+- **Page Gutter**: 16px on mobile, 32px on desktop.
+- **Card Radius**: `32px` (Extra large rounding for a modern "app" feel).
+- **Input Radius**: `12px`.
 
-| Level | Size | Weight | Line Height | Case | Tracking |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **H1 (Display)** | `32px` | `800` | `1.1` | Sentence | `-0.04em` |
-| **H2 (Section)** | `24px` | `700` | `1.2` | Sentence | `-0.02em` |
-| **H3 (Card Title)**| `18px` | `700` | `1.3` | Sentence | `normal` |
-| **Body (Large)** | `16px` | `500` | `1.5` | Sentence | `normal` |
-| **Body (Small)** | `14px` | `400` | `1.5` | Sentence | `normal` |
-| **Label/Button** | `14px` | `700` | `1.0` | **UPPERCASE** | `0.1em` |
-| **Micro (Meta)** | `11px` | `600` | `1.4` | **UPPERCASE** | `0.05em` |
-
----
-
-## 📏 3. Spacing System
-
-Based on an **8px grid** for consistent rhythm.
-
-- **4px**: Micro-adjustments, internal icon-text gaps.
-- **8px**: Small component internal padding.
-- **12px**: Grid item gaps, small card padding.
-- **16px**: Standard body padding, secondary card margins.
-- **24px**: Section spacing, primary card padding.
-- **32px**: Page edge padding on desktop, large section dividers.
+### 🏗️ Atomic Components
+- **Glass Panel**: 
+  ```css
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  ```
+- **Premium Button**:
+  - `height: 48px`, `border-radius: 999px`, `font-weight: 700`, `letter-spacing: 0.5px`.
+  - Hover: `transform: translateY(-2px)`, `box-shadow: 0 8px 20px rgba(30, 215, 96, 0.3)`.
 
 ---
 
-## 📐 4. Border Radius & Shadows
+## 📱 3. Core Interface Specifications
 
-### Border Radius
-- **Pill (Button)**: `9999px`
-- **Card (Large)**: `32px` (Premium rounded look)
-- **Card (Standard)**: `24px`
-- **Input/Badge**: `12px`
+### 🏡 Citizen Home (Mobile Feed)
+- **Top Bar**: User avatar (left), SOS quick-action (right).
+- **Stats Carousel**: Horizontal scrollable cards for Reputation and Level.
+- **Complaint Cards**: 
+  - Image background with bottom-up dark gradient.
+  - Overlay: Title (bold white), Status (top right badge), Urgency (bottom right indicator).
 
-### Shadows
-- **Light**: `0 4px 12px rgba(0,0,0,0.1)` (Static cards)
-- **Medium**: `0 8px 24px rgba(0,0,0,0.2)` (Hover states, Modals)
-- **Heavy (Dark Mode)**: `0 12px 48px rgba(0,0,0,0.5)` (AI Intelligence Panels)
+### 📋 Submission Flow (Step-by-Step)
+1. **Media**: Drag-and-drop or camera shutter interface.
+2. **Details**: Title and description with AI-assisted autocomplete.
+3. **Location**: Full-screen map with "Use Current Location" primary action.
+4. **Analysis**: Lottie animation while Gemini processes the payload.
 
----
-
-## 🧱 5. Component System
-
-### 🔘 Buttons
-- **Primary**: Brand Green background, Black text (`#000000`), Pill shape. Scale up on hover (1.05x).
-- **Secondary**: Transparent with 1px border (`var(--color-border)`), White text. Subtle background glow on hover.
-- **Ghost**: No background, White text. Text turns Primary Green on hover.
-- **Voice Button**: Circular (`50%`), Pulse animation when active.
-
-### 🃏 Cards
-- **Complaint Card**: `32px` radius. Gradient border on hover. Category badge top-right.
-- **AI Panel**: Glassmorphism effect (`backdrop-filter: blur(12px)`). Background: `rgba(255,255,255,0.03)`.
-- **Reward Card**: Interactive hover state. Background transition from Secondary BG to a subtle primary gradient.
-
-### 🧭 Navigation
-- **Mobile Bottom Bar**: 72px height. Floating effect with `blur(20px)`. Icon active state: Brand Green + subtle glow dot underneath.
-- **Admin Sidebar**: 280px width. Collapsible to 80px. High contrast between active/inactive items.
+### 🏛️ Admin/Official Terminal
+- **Sidebar**: High-contrast dark sidebar with "Flat Icons" (SVG).
+- **Metric Cards**: Large typography for totals with colored trend indicators.
+- **DataTable**: Clean row-based layout with "Action" columns (Notify, Delete, Reassign).
 
 ---
 
-## 📱 6. Screen-by-Screen Design
+## 🎬 4. Animation & Interactivity
 
-### 1. Home Screen (The Feed)
-- **Header**: Circular avatar + Welcome text + Notifications icon.
-- **Hero Stats**: Horizontal scroll of "Reputation Points" and "Level Progress" bars.
-- **Action Bar**: Large fixed "REPORT ISSUE" button (Floating Action Button style).
-- **Feed**: Vertical list of nearby complaints with high-res thumbnails.
+### ⚛️ Framer Motion Orchestration
+- **Page Transitions**: 
+  - `initial={{ opacity: 0, y: 20 }}`, `animate={{ opacity: 1, y: 0 }}`.
+- **Micro-interactions**:
+  - Button Tap: `scale: 0.95`.
+  - Hover: `scale: 1.02`.
+- **Staggered Entrance**: Grid items animate with `delay: i * 0.1`.
 
-### 2. Submission Flow
-- **Step-based UI**: Progress indicator at the top.
-- **Media Upload**: Large "Tap to Upload" zone with dotted border.
-- **Location Selector**: Inline mini-map with current location auto-focused.
-
-### 3. AI Analysis (The "Magic" Moment)
-- **Animation**: Lottie pulse while processing.
-- **Structure**: Title ("Civic Intelligence") -> Confidence Bar -> Auto-Category -> Resolution Hint.
-- **Visuals**: Use `#539df5` (Info Blue) accents for AI-generated text.
-
----
-
-## 🎬 7. Interactions & Animations
-
-**Library**: `framer-motion`
-
-- **Page Transitions**: Slide up and Fade (300ms, ease-out).
-- **Staggered Lists**: Complaint cards should animate in one by one (stagger: 0.1s).
-- **Micro-interactions**: 
-  - Button press: `scale: 0.96`.
-  - Checkboxes: Spring pop-out.
-  - Progress bars: Smooth width transition (800ms).
+### 🚨 Critical SOS Pulse
+```css
+@keyframes strobe {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+```
 
 ---
 
-## 🌗 8. Dark & Light Mode Rules
+## 🗺️ 5. Geospatial Visualization
 
-- **Theme Variable Mapping**: Use CSS Variables (`--color-bg-base`, `--color-text-primary`).
-- **Surface Elevation**: In Dark Mode, higher elevation elements get lighter backgrounds. In Light Mode, higher elevation gets more shadow.
-- **Image Treatment**: In Dark Mode, images should have `brightness(0.9)` to reduce eye strain.
-
----
-
-## 🧠 9. UX Principles
-
-1. **Mobile-First**: Every button is reachable with one thumb (bottom-heavy layout).
-2. **Confidence First**: Show AI confidence scores to build user trust.
-3. **No Dead Ends**: Every error or empty state should have a "Go back to Home" or "Try Again" button.
-4. **Reward Loop**: Celebrate every submission with a "Points Earned" popup.
+- **Base Layer**: Dark-mode street map (CartoDB DarkMatter).
+- **Markers**: 
+  - `Pill` shape with category icon.
+  - Color-coded: Yellow (Pending) -> Blue (In Progress) -> Green (Resolved).
+- **Fly-To Interaction**: Zoom level `16` for single issues, `13` for clusters.
 
 ---
 
-## 🔥 10. Special CivicX Elements
+**CivicX Design Philosophy** — *The intersection of official authority and startup premium.*
 
-### Status Badge Colors
-- **PENDING**: Gray Background / White Text.
-- **ASSIGNED**: Blue Background / White Text.
-- **IN_PROGRESS**: Yellow Background / Black Text.
-- **RESOLVED**: Green Background / Black Text.
-
-### AI Risk Indicator
-- 1-3: Low (Green dot)
-- 4-7: High (Orange pulse)
-- 8-10: Critical (Red strobe)
 
 ---
 

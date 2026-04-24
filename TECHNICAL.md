@@ -1,37 +1,62 @@
 # 🧠 CivicX: Technical Architecture & Logic Blueprint
 
-This document specifies the internal logic, database structures, and AI configurations of the CivicX platform. Use this as the "Brain" to compliment the "Body" (DESIGN.md).
+This document specifies the internal logic, database structures, and AI configurations of the CivicX platform. It is designed to enable a "one-shot" reconstruction of the entire infrastructure.
 
 ---
 
 ## 🏗️ 1. System Architecture
 
-- **Backend**: Node.js (Express)
-- **Frontend**: React 19 (Vite)
-- **Database**: MongoDB (Geospatial Enabled)
-- **AI Engine**: Google Gemini 2.5 Flash
-- **State Management**: Zustand (Client-side)
-- **Auth**: JWT (JSON Web Tokens) with 7-day expiration.
+- **Backend**: Node.js (Express) - RESTful API.
+- **Frontend**: React 19 (Vite) - SPA with Atomic Design.
+- **Database**: MongoDB (Geospatial Enabled) - Atlas recommended.
+- **AI Engine**: Google Gemini 2.5 Flash - Real-time analysis & routing.
+- **Automation**: n8n (External) - Handles email notifications & workflow triggers.
+- **Auth**: JWT (JSON Web Tokens) - 7-day expiration with secure cookie/local storage strategies.
 
 ---
 
 ## 📊 2. Database Models (Mongoose Schemas)
 
 ### 👤 User Model
-- `reputationScore`: (Number) Range 0-100.
-- `points`: (Number) Current spendable points.
-- `totalPointsEarned`: (Number) Lifetime accumulation (used for leveling).
-- `level`: (Number) Calculation: `Math.floor(totalPointsEarned / 500) + 1`.
-- `tier`: (Enum) `bronze`, `silver`, `gold`, `platinum`.
-- `badges`: (Array) Objects with `name`, `icon`, `earnedAt`.
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `name` | String | Full name (Required). |
+| `email` | String | Unique email (Required, lowercase). |
+| `password` | String | Bcrypt hashed password. |
+| `role` | Enum | `citizen` (default), `official`, `admin`. |
+| `department` | String | Department name (only for `official`). |
+| `isApproved` | Boolean | Required for `official` to login. |
+| `points` | Number | Current spendable points. |
+| `totalPointsEarned` | Number | Lifetime XP for leveling. |
+| `level` | Number | `Math.floor(totalPointsEarned / 500) + 1`. |
+| `tier` | Enum | `bronze`, `silver`, `gold`, `platinum`. |
+| `reputationScore` | Number | range 0-100 (Default: 50). |
+| `complaintsSubmitted`| Number | Count of reports filed. |
+| `complaintsResolved` | Number | Count of reports marked as 'resolved'. |
 
 ### 📋 Complaint Model
-- `location`: GeoJSON Point `[lng, lat]` with 2dsphere indexing.
-- `status`: `pending`, `assigned`, `in_progress`, `resolved`, `rejected`, `duplicate`.
-- `urgency`: `low`, `medium`, `high`, `critical`.
-- `aiAnalysis`: Structured object (see AI Engine section).
-- `fraudScore`: (Number) Probability of fake report (0-100).
-- `upvotes/downvotes`: Array of User ObjectIDs.
+- **Geospatial**: `location: { type: "Point", coordinates: [lng, lat] }` (2dsphere index).
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `title` | String | AI-generated or user-provided summary. |
+| `description` | String | Detailed issue report. |
+| `category` | Enum | `garbage`, `water`, `pothole`, `streetlight`, `sewage`, `noise`, `encroachment`, `traffic`, `electricity`, `police`, `fire`, `other`. |
+| `urgency` | Enum | `low`, `medium`, `high`, `critical`. |
+| `status` | Enum | `pending`, `assigned`, `in_progress`, `resolved`, `rejected`. |
+| `images` | Array | URLs of uploaded evidence (CDN/Base64). |
+| `department` | String | Assigned municipal department. |
+| `isAIVerified` | Boolean | True if image/text matches category patterns. |
+| `aiAnalysis` | Object | Detailed JSON (priority, sentiment, keywords, suggested_resolution). |
+| `user` | ObjectID | Reference to User model. |
+| `notified` | Boolean | True if department has been alerted. |
+
+### 🚨 SOS Model
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `type` | Enum | `medical`, `police`, `fire`, `disaster`. |
+| `status` | Enum | `active`, `responding`, `resolved`. |
+| `location` | Object | `[lng, lat]` + `address`. |
+| `user` | ObjectID | Reference to User. |
 
 ---
 
@@ -40,104 +65,78 @@ This document specifies the internal logic, database structures, and AI configur
 ### 📝 Core Classification Prompt
 The system sends the following structured prompt to Gemini:
 ```text
-Analyze and return ONLY a JSON object:
-- category: [garbage, pothole, streetlight, water, sewage, noise, encroachment, traffic, electrical, other]
-- priority: [low, medium, high, critical]
-- sentiment: [frustrated, concerned, neutral, angry, emergency]
-- keywords: Array of 5-8 strings
-- summary: Professional 1-sentence summary
-- confidence: Decimal 0-1
-- urgency_score: 1-10 based on safety risk
-- suggested_resolution: Actionable technical suggestion
+Analyze this civic issue report and return ONLY a valid JSON object:
+{
+  "category": "garbage|pothole|streetlight|water|sewage|noise|encroachment|traffic|electricity|other",
+  "priority": "low|medium|high|critical",
+  "sentiment": "frustrated|concerned|neutral|angry|emergency",
+  "keywords": ["tag1", "tag2"],
+  "summary": "1-sentence summary",
+  "confidence": 0.0-1.0,
+  "urgency_score": 1-10,
+  "is_valid": boolean,
+  "suggested_resolution": "Technical action for authorities"
+}
 ```
 
-### 🛡️ Robust Parsing
-- **JSON Extraction**: Uses regex `rawText.match(/\{[\s\S]*\}/)` to isolate JSON from any conversational AI text.
-- **Dynamic Initialization**: Re-initializes `GoogleGenerativeAI` per request to ensure the latest `.env` keys are active.
-- **Fallback Mode**: If API fails, returns a keyword-based analysis with the source marked as `fallback`.
+---
+
+## 🔌 4. API Specification
+
+### 🔓 Public / Auth
+- `POST /api/auth/register`: Create user account.
+- `POST /api/auth/login`: Authenticate and receive JWT.
+- `GET /api/auth/profile`: [AUTH] Fetch current user data.
+
+### 📋 Complaints
+- `POST /api/complaints`: [AUTH] Submit new report with image analysis.
+- `GET /api/complaints`: Fetch public feed (supports `limit`, `status` filters).
+- `GET /api/complaints/:id`: Fetch full report details.
+- `POST /api/complaints/:id/vote`: [AUTH] Upvote/Downvote report.
+
+### 🏛️ Administrative (Admin Only)
+- `GET /api/admin/stats`: Fetch high-level analytics (Category breakdown, daily trend).
+- `GET /api/admin/users`: Fetch list of all citizens/officials.
+- `POST /api/admin/users`: Create new citizen or official account.
+- `DELETE /api/admin/users/:id`: Permanently delete a user.
+- `GET /api/admin/complaints`: Fetch all complaints with management options.
+- `DELETE /api/admin/complaints/:id`: Remove fraudulent/duplicate reports.
+- `PUT /api/admin/complaints/:id`: Reassign department or update status.
+
+### 🏛️ Official Dashboard
+- `GET /api/official/assigned`: Fetch reports assigned to user's department.
+- `PATCH /api/official/status`: Update report status (e.g., to `in_progress` or `resolved`).
+- `GET /api/official/stats`: Fetch department-specific resolution metrics.
 
 ---
 
-## 🎮 4. Gamification & Rewards Logic
+## 🪙 5. Rewards & Redemption Logic
 
-### 🪙 Point Values
-| Action | Points |
-| :--- | :--- |
-| Submit Complaint | `50` |
-| Upload Images | `20` |
-| Complaint Verified | `30` |
-| Complaint Resolved | `100` |
-| Community Vote | `15` |
-| Badge Earned | `75` |
-| Level Up | `200` |
+### Point Allocation
+- `Report Submission`: +50 XP
+- `Resolution Contributor`: +100 XP
+- `Verification (UPVOTE)`: +10 XP
 
-### 📈 Leveling Math
-- `Level = floor(TotalPoints / 500) + 1`
-- Every level up grants a one-time `200` point bonus.
+### Redemption Process
+1. User selects voucher (e.g., Amazon $10).
+2. Backend checks `points >= cost`.
+3. Deduction occurs, and a new `Redemption` record is created.
+4. Admin reviews and approves the redemption.
 
 ---
 
-## 🗺️ 5. Geospatial & Intelligence Logic
+## 🎙️ 6. Specialized Systems
 
-### 🔍 Duplicate Detection
-- **Window**: Checks for reports within the last **48 hours**.
-- **Distance**: Searches within a **500-meter** radius using `$near` query.
-- **Similarity**: Uses `string-similarity` library (Dice's Coefficient). Threshold: `> 0.6` matches are flagged as duplicates.
+### 📍 Map Intelligence
+- **Clustering**: Uses `react-leaflet-cluster` for dense areas.
+- **Dynamic Icons**: Marker colors change based on `status`.
+- **Pulse Animation**: "Critical" issues (urgency > 8) trigger a CSS-based red pulse.
 
-### 📍 Hotspot Aggregation (Admin)
-- **Clustering**: Rounds coordinates to 3 decimal places (~110m precision).
-- **Trigger**: Areas with **3+ active complaints** are flagged as "High Risk Hotspots."
-- **Risk Level**: Calculated using `avg(aiAnalysis.urgency_score)`.
-
----
-
-## 🔐 6. Administrative & Security
-
-### 🔑 Admin Seeding
-On server start, the system automatically:
-1. Checks if `ADMIN_EMAIL` exists in the DB.
-2. If not, creates a super-user with `role: 'admin'`.
-3. If user exists but is not an admin, enforces the admin role upgrade.
-
-### 🛡️ Security Layers
-- **CORS**: Enforced `origin: true` with `credentials: true`.
-- **Rate Limiting**: `200 requests / 15 mins` per IP for API safety.
-- **Helmet.js**: Implemented for HTTP header security.
+### 🎙️ CivicSpeak (Voice)
+- Uses `webkitSpeechRecognition`.
+- Logic: Continuous listening -> Real-time transcript -> Buffer analysis -> Final submission to AI Engine.
 
 ---
 
-## ⚛️ 7. Frontend Architecture & State
-
-### 📦 State Management (Zustand)
-The app uses a unified store (`client/src/store/index.js`) to manage:
-- **Auth Store**: Handles login/logout, user profile caching, and `civicx_token` persistence.
-- **Complaint Store**: Manages the global list of complaints, map marker filtering, and "currentComplaint" selection.
-- **UI Store**: Handles modal states, sidebar toggles, and theme switching logic.
-
-### 🧩 Core Component Hierarchy
-- **Layouts**: `AdminLayout` (Collapsible sidebar) and `CitizenLayout` (Bottom Nav).
-- **MapView**: Uses `react-leaflet`. Marker logic:
-  - Yellow: PENDING
-  - Blue: ASSIGNED/IN_PROGRESS
-  - Green: RESOLVED
-  - Red Strobe: CRITICAL (AI urgenccy > 8)
-- **IntelligencePanel**: Reusable component that parses `aiAnalysis` and renders a progress bar for `confidence` and a targeted `suggested_resolution`.
-
----
-
-## 🛠️ 8. Integration & API Patterns
-
-### 📡 API Service (`api.js`)
-- **Base Config**: Uses `axios` with interceptors to automatically attach the `Authorization` header.
-- **Base URL**: Dynamically switches between `process.env.VITE_API_BASE_URL` (Production) and `/api` (Proxy for Development).
-- **Error Handling**: 401 Interceptor automatically wipes local storage and redirects to `/login`.
-
-### 🎙️ CivicSpeak (Voice Logic)
-Uses the browser's `Web Speech API`:
-- **Continuous Mode**: `recognition.continuous = true` ensures the mic doesn't turn off during pauses.
-- **Auto-stop**: Ends session only when user taps "Stop Intel Capture."
-
----
-
-**CivicX Technical Stack** — *The logical heart of next-gen governance.*
+**CivicX Technical Specification** — *Built for Scalable Urban Intelligence.*
 
