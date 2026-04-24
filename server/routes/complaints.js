@@ -137,6 +137,8 @@ router.post('/', auth, upload.array('photos', 5), async (req, res) => {
       'traffic': 'Traffic Police',
       'police': 'Police Department',
       'fire': 'Fire Department',
+      'noise': 'Municipal Board',
+      'encroachment': 'Public Works',
       'other': 'Other'
     };
 

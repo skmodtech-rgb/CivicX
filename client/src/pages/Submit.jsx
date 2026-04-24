@@ -272,7 +272,7 @@ export default function Submit() {
               <div className="form-group">
                 <label className="micro text-muted">Category (AI will auto-classify)</label>
                 <select className="input" value={category} onChange={e => setCategory(e.target.value)}>
-                  {['garbage', 'water', 'pothole', 'streetlight', 'sewage', 'traffic', 'electricity', 'police', 'fire', 'other']
+                  {['garbage', 'water', 'pothole', 'streetlight', 'sewage', 'traffic', 'electricity', 'noise', 'encroachment', 'police', 'fire', 'other']
                     .map(c => <option key={c} value={c}>{c === 'keb' ? 'Electricity (KEB)' : c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
                 </select>
               </div>

@@ -74,7 +74,12 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
               onClick={() => navigate(`/complaint/${c._id}`)}
-              style={{ cursor: 'pointer', backgroundImage: `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.7) 50%, rgba(18,18,18,0.3) 100%), url(/categories/cat_${c.category || 'other'}.png)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              style={{ 
+                cursor: 'pointer', 
+                backgroundImage: `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.7) 50%, rgba(18,18,18,0.3) 100%), url(${c.images?.[0] || `/categories/cat_${c.category || 'other'}.png`})`, 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center' 
+              }}
             >
               {c.aiAnalysis?.urgency_score >= 8 && (
                 <div className="cc-critical-ribbon animate-strobe">CRITICAL</div>
