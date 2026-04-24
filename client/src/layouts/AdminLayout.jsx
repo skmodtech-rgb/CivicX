@@ -4,20 +4,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, useUIStore } from '../store';
 import { 
   DashboardIcon, ClipboardIcon, FlameIcon, BrainIcon, 
-  SunIcon, MoonIcon, HomeIcon, LogoutIcon,
-  UsersIcon, BuildingIcon, GiftIcon, AlertIcon
+  SunIcon, MoonIcon, HomeIcon, LogoutIcon 
 } from '../components/Icons';
 import './AdminLayout.css';
 
 const sidebarItems = [
   { path: '/admin', icon: <DashboardIcon size={18} />, label: 'Dashboard', end: true },
   { path: '/admin/complaints', icon: <ClipboardIcon size={18} />, label: 'Complaints' },
-  { path: '/admin/users', icon: <UsersIcon size={18} />, label: 'Citizens' },
-  { path: '/admin/authorities', icon: <BuildingIcon size={18} />, label: 'Authorities' },
-  { path: '/admin/redemptions', icon: <GiftIcon size={18} />, label: 'Redemptions' },
+  { path: '/admin/users', icon: <span style={{fontSize:16, lineHeight:1}}>👥</span>, label: 'Citizens' },
+  { path: '/admin/authorities', icon: <span style={{fontSize:16, lineHeight:1}}>🏛️</span>, label: 'Authorities' },
+  { path: '/admin/redemptions', icon: <span style={{fontSize:16, lineHeight:1}}>🎁</span>, label: 'Redemptions' },
   { path: '/admin/hotspots', icon: <FlameIcon size={18} />, label: 'Hotspots' },
   { path: '/admin/insights', icon: <BrainIcon size={18} />, label: 'Insights' },
-  { path: '/admin/sos', icon: <AlertIcon size={18} />, label: 'SOS Alerts' }
+  { path: '/admin/sos', icon: <span style={{fontSize:16, lineHeight:1}}>🚨</span>, label: 'SOS Alerts' }
 ];
 
 export default function AdminLayout() {

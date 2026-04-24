@@ -144,9 +144,7 @@ export default function OfficialDashboard() {
             <AnimatePresence mode="popLayout">
               {filteredTasks.length === 0 ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="empty-state-premium card card-lg">
-                  <div className="empty-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  </div>
+                  <div className="empty-icon">🎖️</div>
                   <h3>All tasks completed!</h3>
                   <p className="text-secondary">Great job maintaining your department efficiency.</p>
                 </motion.div>
@@ -165,10 +163,7 @@ export default function OfficialDashboard() {
                         <span className="micro text-muted">#{task._id.slice(-6)}</span>
                       </div>
                       <h3 className="task-title">{task.title}</h3>
-                      <p className="task-loc">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 4 }}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        {task.location.address || 'Location provided'}
-                      </p>
+                      <p className="task-loc">📍 {task.location.address || 'Location provided'}</p>
                       <p className="task-desc">{task.description}</p>
                       
                       <div className="task-meta">
@@ -190,10 +185,7 @@ export default function OfficialDashboard() {
                         {task.images.length > 2 && <div className="preview-more">+{task.images.length - 2}</div>}
                       </div>
                       <div style={{ display: 'flex', gap: 10 }}>
-                        <button className="btn btn-secondary" onClick={() => notifyManagement(task)} style={{ flex: 1, height: 44, borderRadius: 12, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                          Notify
-                        </button>
+                        <button className="btn btn-secondary" onClick={() => notifyManagement(task)} style={{ flex: 1, height: 44, borderRadius: 12, fontSize: 13 }}>✉️ Notify</button>
                         <button className="btn btn-primary resolve-btn" onClick={() => setSelectedTask(task)} style={{ flex: 2 }}>Resolve Task</button>
                       </div>
                     </div>
@@ -206,10 +198,10 @@ export default function OfficialDashboard() {
 
       case 'rewards':
         const rewards = [
-          { id: 'bonus_1', title: 'Performance Bonus', desc: 'Financial incentive for 500 tasks', points: 5000, icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
-          { id: 'leave_1', title: 'Extra Leave Day', desc: '1 day additional paid leave', points: 3000, icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> },
-          { id: 'voucher_1', title: 'Amazon Gift Card', desc: '₹2000 shopping voucher', points: 2000, icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> },
-          { id: 'medal_1', title: 'Honor Medal', desc: 'Profile badge & certificate', points: 1000, icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg> }
+          { id: 'bonus_1', title: 'Performance Bonus', desc: 'Financial incentive for 500 tasks', points: 5000, icon: '💵' },
+          { id: 'leave_1', title: 'Extra Leave Day', desc: '1 day additional paid leave', points: 3000, icon: '🏖️' },
+          { id: 'voucher_1', title: 'Amazon Gift Card', desc: '₹2000 shopping voucher', points: 2000, icon: '🎁' },
+          { id: 'medal_1', title: 'Honor Medal', desc: 'Profile badge & certificate', points: 1000, icon: '🏅' }
         ];
 
         return (
@@ -217,7 +209,7 @@ export default function OfficialDashboard() {
             <div className="reward-grid">
               {rewards.map(r => (
                 <div key={r.id} className="card reward-card-premium">
-                  <div className="reward-icon-lg" style={{ color: 'var(--color-primary)' }}>{r.icon}</div>
+                  <div className="reward-icon-lg">{r.icon}</div>
                   <h3>{r.title}</h3>
                   <p className="text-secondary micro">{r.desc}</p>
                   <div className="reward-footer">
@@ -282,18 +274,14 @@ export default function OfficialDashboard() {
         </div>
         <div className="header-stats">
           <div className="stat-card glass-panel">
-            <span className="stat-icon" style={{ color: 'var(--color-warning)' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.288l5.165.752a.53.53 0 0 1 .293.904L17.363 12.6a.53.53 0 0 0-.152.47l.882 5.143a.53.53 0 0 1-.769.56l-4.62-2.43a.53.53 0 0 0-.494 0l-4.62 2.43a.53.53 0 0 1-.769-.56l.882-5.142a.53.53 0 0 0-.152-.47L3.084 8.916a.53.53 0 0 1 .293-.904l5.165-.752a.53.53 0 0 0 .4-.288l2.31-4.679z"/></svg>
-            </span>
+            <span className="stat-icon">⭐</span>
             <div>
               <p className="stat-label">Total XP</p>
               <p className="stat-value">{stats.user.points || 0}</p>
             </div>
           </div>
           <div className="stat-card glass-panel">
-            <span className="stat-icon" style={{ color: 'var(--color-success)' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-            </span>
+            <span className="stat-icon">🏆</span>
             <div>
               <p className="stat-label">Resolved</p>
               <p className="stat-value">{stats.resolvedCount}</p>
@@ -305,18 +293,16 @@ export default function OfficialDashboard() {
       {/* Tab Navigation */}
       <nav className="dashboard-nav">
         {[
-          { id: 'assignments', label: 'Assignments', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>, count: tasks.length },
-          { id: 'high-priority', label: 'High Priority', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, count: tasks.filter(t => t.urgency === 'critical' || t.urgency === 'high').length },
-          { id: 'rewards', label: 'Rewards', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>, count: null },
-          { id: 'history', label: 'History', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, count: history.length }
+          { id: 'assignments', label: '📋 Assignments', count: tasks.length },
+          { id: 'high-priority', label: '🔥 High Priority', count: tasks.filter(t => t.urgency === 'critical' || t.urgency === 'high').length },
+          { id: 'rewards', label: '🎁 Rewards', count: null },
+          { id: 'history', label: '🕒 History', count: history.length }
         ].map(tab => (
           <button 
             key={tab.id}
             className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
-            style={{ display: 'flex', alignItems: 'center', gap: 10 }}
           >
-            {tab.icon}
             {tab.label}
             {tab.count !== null && <span className="nav-count">{tab.count}</span>}
           </button>
