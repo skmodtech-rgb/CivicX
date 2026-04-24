@@ -73,6 +73,20 @@ export default function AdminComplaints() {
     }
   };
 
+  const handleDelete = async (id, title) => {
+    if (!confirm(`Are you sure you want to PERMANENTLY DELETE report: "${title}"?`)) return;
+
+    setUpdating(id);
+    try {
+      await api.delete(`/admin/complaints/${id}`);
+      alert('Report deleted successfully.');
+      fetchAll();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete report');
+    }
+    setUpdating(null);
+  };
+
   const deptOptions = ['Municipal Board', 'Public Works', 'Electricity Board', 'Traffic Police', 'Police Department', 'Fire Department', 'Other'];
 
   return (
@@ -90,7 +104,7 @@ export default function AdminComplaints() {
         <select className="input" style={{ width:'auto', minWidth:140 }}
           value={filter.category} onChange={e => setFilter(f => ({...f, category: e.target.value}))}>
           <option value="">All Categories</option>
-          {['garbage', 'water', 'pothole', 'streetlight', 'sewage', 'traffic', 'electricity', 'police', 'fire', 'other']
+          {['garbage', 'water', 'pothole', 'streetlight', 'sewage', 'traffic', 'electricity', 'noise', 'encroachment', 'police', 'fire', 'other']
             .map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
         </select>
         <button className="btn btn-sm btn-secondary" onClick={fetchAll}>↻ Refresh</button>
@@ -111,9 +125,8 @@ export default function AdminComplaints() {
             <span style={{ flex:2 }}>Report</span>
             <span style={{ flex:1.2 }}>Department</span>
             <span style={{ flex:0.8 }}>Urgency</span>
-            <span style={{ flex:0.8 }}>AI Score</span>
             <span style={{ flex:1 }}>Status</span>
-            <span style={{ flex:0.8 }}>Notify</span>
+            <span style={{ flex:1.2, textAlign: 'right' }}>Actions</span>
           </div>
 
           {complaints.map((c, i) => (
@@ -123,7 +136,7 @@ export default function AdminComplaints() {
                 <p style={{ fontWeight:600, fontSize:14 }}>{c.title}</p>
                 <p className="micro text-muted">{c.user?.name} • {c.category.toUpperCase()} • {new Date(c.createdAt).toLocaleDateString()}</p>
               </div>
-              <div className="data-cell" data-label="Department" style={{ flex:1.2 }}>
+              <div className="data-cell" data-label="Dept" style={{ flex:1.2 }}>
                 <select className="input" style={{ padding:'6px 8px', fontSize:11, width:'100%' }}
                   value={c.department}
                   disabled={updating === c._id}
@@ -134,12 +147,6 @@ export default function AdminComplaints() {
               <div className="data-cell" data-label="Urgency" style={{ flex:0.8 }}>
                 <span className={`badge badge-${c.urgency}`} style={{ fontSize:10 }}>{c.urgency}</span>
               </div>
-              <div className="data-cell" data-label="AI Score" style={{ flex:0.8 }}>
-                <span style={{ fontWeight:700, color: (c.aiAnalysis?.urgency_score||0) >= 8 ? 'var(--color-error)' :
-                  (c.aiAnalysis?.urgency_score||0) >= 5 ? '#F97316' : 'var(--color-success)' }}>
-                  {c.aiAnalysis?.urgency_score || '-'}/10
-                </span>
-              </div>
               <div className="data-cell" data-label="Status" style={{ flex:1 }}>
                 <select className="input" style={{ padding:'6px 8px', fontSize:11, width:'100%' }}
                   value={c.status}
@@ -148,13 +155,21 @@ export default function AdminComplaints() {
                   {statusOptions.map(s => <option key={s} value={s}>{s.replace('_',' ')}</option>)}
                 </select>
               </div>
-              <div className="data-cell" data-label="Notify" style={{ flex:0.8 }}>
+              <div className="data-cell" style={{ flex:1.2, textAlign: 'right', display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                 <button 
-                  className="btn btn-sm btn-primary"
+                  className="btn btn-sm"
                   onClick={() => notifyAuthority(c)}
-                  style={{ padding:'6px 10px', fontSize:10, background:'var(--color-primary)', border:'none', width:'100%' }}
+                  style={{ padding:'6px 10px', fontSize:10, background:'var(--color-primary)', border:'none', color: '#000' }}
                 >
                   ✉️ Notify
+                </button>
+                <button 
+                  className="btn btn-sm btn-ghost"
+                  onClick={() => handleDelete(c._id, c.title)}
+                  style={{ padding:'6px 10px', fontSize:10, color: 'var(--color-error)' }}
+                  disabled={updating === c._id}
+                >
+                  🗑️
                 </button>
               </div>
             </motion.div>

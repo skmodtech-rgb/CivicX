@@ -30,6 +30,37 @@ export default function AdminAuthorities() {
     }
   };
 
+  const handleAddOfficial = async () => {
+    const name = prompt('Enter Official Name:');
+    if (!name) return;
+    const email = prompt('Enter Official Email:');
+    if (!email) return;
+    const password = prompt('Enter Password:');
+    if (!password) return;
+    const department = prompt('Enter Department (e.g. Traffic Police, Municipal Board):');
+    if (!department) return;
+
+    try {
+      await api.post('/admin/users', { name, email, password, role: 'official', department });
+      alert('Official added successfully.');
+      fetchAuthorities();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to add official');
+    }
+  };
+
+  const handleDeleteOfficial = async (userId, userName) => {
+    if (!confirm(`Are you sure you want to PERMANENTLY DELETE official "${userName}"?`)) return;
+
+    try {
+      await api.delete(`/admin/users/${userId}`);
+      alert('Official deleted successfully.');
+      fetchAuthorities();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete official');
+    }
+  };
+
   if (loading) return (
     <div className="text-center text-muted" style={{ padding:60 }}>
       <div className="animate-spin" style={{ fontSize:32 }}>🏛️</div>
@@ -44,7 +75,10 @@ export default function AdminAuthorities() {
           <h1 style={{ marginBottom: 4 }}>🏛️ Authority Management</h1>
           <p className="text-secondary body-sm">Verify and manage government department officials</p>
         </div>
-        <div className="badge badge-primary">Total: {users.length}</div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <button className="btn btn-primary" onClick={handleAddOfficial}>+ Add Official</button>
+          <div className="badge badge-primary">Total: {users.length}</div>
+        </div>
       </div>
 
       <div className="card" style={{ overflowX: 'auto' }}>
@@ -96,17 +130,24 @@ export default function AdminAuthorities() {
                   {new Date(u.createdAt).toLocaleDateString()}
                 </td>
                 <td style={{ padding: 16, textAlign: 'right' }}>
-                  {!u.isApproved ? (
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                    {!u.isApproved && (
+                      <button 
+                        className="btn btn-sm btn-success"
+                        onClick={() => handleApprove(u._id)}
+                        style={{ padding: '6px 12px', fontSize: '11px' }}
+                      >
+                        ✅ Approve
+                      </button>
+                    )}
                     <button 
-                      className="btn btn-sm btn-success"
-                      onClick={() => handleApprove(u._id)}
-                      style={{ padding: '6px 12px', fontSize: '11px' }}
+                      className="btn btn-sm btn-ghost"
+                      onClick={() => handleDeleteOfficial(u._id, u.name)}
+                      style={{ padding: '6px 12px', fontSize: '11px', color: 'var(--color-error)' }}
                     >
-                      ✅ Approve Access
+                      🗑️ Delete
                     </button>
-                  ) : (
-                    <span className="micro text-muted">No Actions Required</span>
-                  )}
+                  </div>
                 </td>
               </motion.tr>
             ))}

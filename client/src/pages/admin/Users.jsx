@@ -33,6 +33,35 @@ export default function AdminUsers() {
     }
   };
 
+  const handleDeleteUser = async (userId, userName) => {
+    if (!confirm(`Are you sure you want to PERMANENTLY DELETE user "${userName}"? This action cannot be undone.`)) return;
+
+    try {
+      await api.delete(`/admin/users/${userId}`);
+      alert('User deleted successfully.');
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete user');
+    }
+  };
+
+  const handleAddUser = async () => {
+    const name = prompt('Enter Name:');
+    if (!name) return;
+    const email = prompt('Enter Email:');
+    if (!email) return;
+    const password = prompt('Enter Password:');
+    if (!password) return;
+
+    try {
+      await api.post('/admin/users', { name, email, password, role: 'citizen' });
+      alert('Citizen added successfully.');
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to add user');
+    }
+  };
+
   const tierColors = { bronze:'#CD7F32', silver:'#C0C0C0', gold:'#FFD700', platinum:'#E5E4E2' };
 
   if (loading) return <div className="text-center text-muted" style={{ padding:60 }}><div className="animate-spin" style={{ fontSize:32 }}>⚙️</div><p style={{ marginTop:12 }}>Loading Citizens...</p></div>;
@@ -44,7 +73,10 @@ export default function AdminUsers() {
           <h1 style={{ marginBottom: 4 }}>👥 Citizen Directory</h1>
           <p className="text-secondary body-sm">Manage users and roles</p>
         </div>
-        <div className="badge badge-primary">Total: {users.length}</div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <button className="btn btn-primary" onClick={handleAddUser}>+ Add Citizen</button>
+          <div className="badge badge-primary">Total: {users.length}</div>
+        </div>
       </div>
 
       <div className="card" style={{ overflowX: 'auto' }}>
@@ -99,18 +131,27 @@ export default function AdminUsers() {
                   {new Date(u.createdAt).toLocaleDateString()}
                 </td>
                 <td style={{ padding: 16, textAlign: 'right' }}>
-                  <button 
-                    className="btn btn-sm btn-primary"
-                    onClick={() => handleAwardPoints(u._id, u.name)}
-                    style={{ padding: '4px 8px', fontSize: '11px' }}
-                  >
-                    🎁 Award
-                  </button>
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                    <button 
+                      className="btn btn-sm btn-ghost"
+                      onClick={() => handleAwardPoints(u._id, u.name)}
+                      style={{ padding: '4px 8px', fontSize: '11px' }}
+                    >
+                      🎁 Award
+                    </button>
+                    <button 
+                      className="btn btn-sm btn-ghost"
+                      onClick={() => handleDeleteUser(u._id, u.name)}
+                      style={{ padding: '4px 8px', fontSize: '11px', color: 'var(--color-error)' }}
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
                 </td>
               </motion.tr>
             ))}
             {users.length === 0 && (
-              <tr><td colSpan="5" style={{ padding: 40, textAlign: 'center' }}>No users found.</td></tr>
+              <tr><td colSpan="6" style={{ padding: 40, textAlign: 'center' }}>No users found.</td></tr>
             )}
           </tbody>
         </table>

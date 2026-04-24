@@ -319,6 +319,66 @@ router.post('/users/:id/award-points', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/users — Create a new user (Citizen or Official)
+router.post('/users', adminAuth, async (req, res) => {
+  try {
+    const { name, email, password, role, department } = req.body;
+
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: 'Name, email, password, and role are required.' });
+    }
+
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User with this email already exists.' });
+    }
+
+    const user = new User({
+      name,
+      email: email.toLowerCase(),
+      password,
+      role,
+      department: role === 'official' ? department : null,
+      isApproved: true // Admin created users are auto-approved
+    });
+
+    await user.save();
+    res.status(201).json({ message: 'User created successfully.', user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// DELETE /api/admin/users/:id — Delete a user
+router.delete('/users/:id', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    if (user.role === 'admin') {
+      return res.status(403).json({ message: 'Administrators cannot be deleted via this portal.' });
+    }
+
+    // Optionally delete their complaints too? User might prefer keeping the data.
+    // For now, just delete the user.
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// DELETE /api/admin/complaints/:id — Delete a complaint
+router.delete('/complaints/:id', adminAuth, async (req, res) => {
+  try {
+    const complaint = await Complaint.findByIdAndDelete(req.params.id);
+    if (!complaint) return res.status(404).json({ message: 'Complaint not found.' });
+    res.json({ message: 'Complaint deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // POST /api/admin/users/:id/approve — Approve a government official
 router.post('/users/:id/approve', adminAuth, async (req, res) => {
   try {
