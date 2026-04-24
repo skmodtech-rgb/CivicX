@@ -62,6 +62,13 @@ router.post('/resolve/:id', auth, isOfficial, async (req, res) => {
 
     await complaint.save();
 
+    // Award points to the official (NEW)
+    const official = await User.findById(req.user._id);
+    if (official) {
+      official.awardPoints(200); // Officials get 200 XP for resolving tasks
+      await official.save();
+    }
+
     // Award points to the citizen who reported it
     const citizen = await User.findById(complaint.user);
     if (citizen) {
@@ -70,7 +77,33 @@ router.post('/resolve/:id', auth, isOfficial, async (req, res) => {
       await citizen.save();
     }
 
-    res.json({ message: 'Task resolved successfully!', complaint });
+    res.json({ message: 'Task resolved successfully!', pointsAwarded: 200 });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @route   GET /api/official/stats
+// @desc    Get official points and stats
+router.get('/stats', auth, isOfficial, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('points level tier totalPointsEarned department');
+    const resolvedCount = await Complaint.countDocuments({ assignedOfficial: req.user._id, status: 'resolved' });
+    res.json({ user, resolvedCount });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @route   GET /api/official/history
+// @desc    Get history of completed tasks
+router.get('/history', auth, isOfficial, async (req, res) => {
+  try {
+    const tasks = await Complaint.find({ 
+      assignedOfficial: req.user._id,
+      status: 'resolved' 
+    }).sort({ resolvedAt: -1 }).limit(20);
+    res.json({ tasks });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
