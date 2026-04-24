@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaintStore, useAuthStore } from '../store';
 
 export default function ComplaintDetail() {
@@ -8,6 +8,7 @@ export default function ComplaintDetail() {
   const navigate = useNavigate();
   const { currentComplaint, loading, fetchComplaint, voteComplaint } = useComplaintStore();
   const user = useAuthStore(s => s.user);
+  const [lightbox, setLightbox] = useState(null);
   const [voting, setVoting] = useState(false);
 
   useEffect(() => { fetchComplaint(id); }, [id]);
@@ -36,7 +37,56 @@ export default function ComplaintDetail() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="detail-page">
+      {/* Lightbox Overlay */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div 
+            className="lightbox-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}
+            style={{
+              position: 'fixed',
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.95)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 20,
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <motion.button 
+              className="close-lightbox"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              style={{
+                position: 'absolute',
+                top: 24, right: 24,
+                background: 'rgba(255,255,255,0.1)',
+                border: 'none',
+                color: '#fff',
+                width: 44, height: 44,
+                borderRadius: '50%',
+                cursor: 'pointer',
+                fontSize: 20
+              }}
+            >✕</motion.button>
+            <motion.img 
+              src={lightbox} 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: 12, boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }} 
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <button className="btn btn-ghost btn-sm" onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>← Back</button>
+
 
       {/* Header with Category Background */}
       <div 
@@ -126,6 +176,45 @@ export default function ComplaintDetail() {
         )}
         <p className="micro text-muted" style={{ marginTop: 12 }}>Source: {ai.source === 'gemini' ? 'Gemini 2.5 Flash' : 'Fallback Engine'}</p>
       </div>
+
+      {/* Evidence Gallery */}
+      {c.images?.length > 0 && (
+        <div className="card" style={{ marginBottom: 16, padding: '16px 20px' }}>
+          <h3 style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+            📸 Evidence Gallery 
+            <span className="micro text-muted">({c.images.length})</span>
+          </h3>
+          <div 
+            className="image-scroll-container" 
+            style={{ 
+              display: 'flex', 
+              gap: 12, 
+              overflowX: 'auto', 
+              paddingBottom: 8,
+              scrollSnapType: 'x mandatory'
+            }}
+          >
+            {c.images.map((img, i) => (
+              <motion.div 
+                key={i} 
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setLightbox(img)}
+                style={{ 
+                  flex: '0 0 160px', 
+                  height: 160, 
+                  borderRadius: 16, 
+                  overflow: 'hidden', 
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  scrollSnapAlign: 'start'
+                }}
+              >
+                <img src={img} alt={`Evidence ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Community Voting */}
       <div className="card" style={{ marginBottom: 16 }}>
