@@ -32,7 +32,7 @@
         "sendTo": "={{ $json.authorityEmail }}",
         "subject": "🚨 New Civic Complaint - Immediate Attention Required",
         "emailType": "html",
-        "message": "=<h3>New Complaint Received</h3><p>A new civic issue has been reported that requires your attention.</p><ul>  <li><b>Complaint ID:</b> {{ $json.complaintId }}</li>  <li><b>Category:</b> {{ $json.category }}</li>  <li><b>Priority:</b> {{ $json.priority }}</li>  <li><b>Location:</b> {{ $json.location }}</li></ul><p><b>Description:</b></p><p>{{ $json.complaintText }}</p><hr><p>This is an automated alert from CivicX AI Platform.</p>"
+        "message": "=<h3>New Complaint Received</h3><p>A new civic issue has been reported that requires your attention.</p><ul>  <li><b>Complaint ID:</b> {{ $json.complaintId }}</li>  <li><b>Category:</b> {{ $json.category }}</li>  <li><b>Priority:</b> {{ $json.priority }}</li>  <li><b>Location:</b> {{ $json.location }}</li></ul><p><b>Description:</b></p><p>{{ $json.complaintText }}</p><hr><p>This is an automated alert from CivicX Platform.</p>"
       },
       "id": "2321a697-298c-401b-8117-0a676319ca17",
       "name": "Email to Authority",
@@ -51,7 +51,7 @@
         "resource": "message",
         "operation": "send",
         "sendTo": "={{ $(\"Validate Input\").item.json.userEmail }}",
-        "subject": "✅ Complaint Submitted Successfully - CivicX AI",
+        "subject": "✅ Complaint Submitted Successfully - CivicX",
         "emailType": "html",
         "message": "=<h3>Hello,</h3><p>Your complaint has been successfully forwarded to the concerned authority.</p><p><b>Complaint Summary:</b></p><ul>  <li><b>ID:</b> {{ $(\"Validate Input\").item.json.complaintId }}</li>  <li><b>Category:</b> {{ $(\"Validate Input\").item.json.category }}</li>  <li><b>Status:</b> Sent to Authority</li></ul><p>Thank you for contributing to a better city!</p><p>— The CivicX Team</p>"
       },
@@ -129,3 +129,4 @@
     }
   }
 }
+

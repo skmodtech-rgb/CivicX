@@ -1,12 +1,12 @@
-# 🏛️ CivicX AI: High-Fidelity Design System & UX Specification
+# 🏛️ CivicX: High-Fidelity Design System & UX Specification
 
-This document serves as the authoritative blueprint for the CivicX AI platform. It is designed to guide AI agents and engineers in recreating a pixel-perfect, premium, mobile-first experience.
+This document serves as the authoritative blueprint for the CivicX platform. It is designed to guide AI agents and engineers in recreating a pixel-perfect, premium, mobile-first experience.
 
 ---
 
 ## 🎨 1. Color System
 
-CivicX AI uses an **Achromatic Dark/Light foundation** with a singular **Vibrant Green** brand accent.
+CivicX uses an **Achromatic Dark/Light foundation** with a singular **Vibrant Green** brand accent.
 
 ### 🟢 Brand Colors
 | Role | HEX | Usage |
@@ -173,4 +173,5 @@ Based on an **8px grid** for consistent rhythm.
 
 ---
 
-**CivicX AI** — *Designing for the Pulse of the City.*
+**CivicX** — *Designing for the Pulse of the City.*
+

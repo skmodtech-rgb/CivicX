@@ -8,8 +8,10 @@ export default function OfficialLayout() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+      navigate('/login');
+    }
   };
 
   return (
@@ -29,7 +31,7 @@ export default function OfficialLayout() {
               <p className="user-name">{user?.name}</p>
               <p className="micro text-muted">{user?.department}</p>
             </div>
-            <button className="logout-btn" onClick={handleLogout}>🚪</button>
+            <button className="logout-btn-premium" onClick={handleLogout}>Logout</button>
           </div>
         </div>
       </nav>
@@ -57,11 +59,12 @@ export default function OfficialLayout() {
         .nav-user { display: flex; gap: 16px; align-items: center; }
         .user-info { text-align: right; }
         .user-name { font-weight: 700; font-size: 14px; }
-        .logout-btn { 
-          background: none; border: none; font-size: 20px; cursor: pointer; 
-          padding: 8px; border-radius: 8px; transition: background 0.2s;
+        .logout-btn-premium { 
+          background: #ef4444; border: none; color: white;
+          padding: 8px 16px; border-radius: 10px; font-weight: 700;
+          font-size: 13px; cursor: pointer; transition: all 0.2s;
         }
-        .logout-btn:hover { background: rgba(255,255,255,0.05); }
+        .logout-btn-premium:hover { background: #dc2626; transform: translateY(-1px); }
         
         .official-main { padding-top: 32px; }
       `}</style>

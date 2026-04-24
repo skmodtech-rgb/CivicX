@@ -391,10 +391,17 @@ export default function OfficialDashboard() {
         .stat-label { font-size: 12px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-value { font-size: 24px; font-weight: 800; }
 
-        .dashboard-nav { display: flex; gap: 8px; margin-bottom: 40px; overflow-x: auto; padding-bottom: 8px; }
-        .nav-item { padding: 12px 20px; border-radius: 14px; background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-muted); cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px; transition: all 0.2s; font-weight: 600; font-size: 14px; }
+        .dashboard-nav { display: flex; gap: 12px; margin-bottom: 40px; overflow-x: auto; padding-bottom: 8px; }
+        .nav-item { 
+          min-width: 160px; height: 50px; 
+          padding: 0 20px; border-radius: 14px; 
+          background: var(--color-surface); border: 1px solid var(--color-border); 
+          color: var(--color-text-muted); cursor: pointer; 
+          white-space: nowrap; display: flex; align-items: center; justify-content: center;
+          gap: 8px; transition: all 0.2s; font-weight: 700; font-size: 14px; 
+        }
         .nav-item.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
-        .nav-count { background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 20px; font-size: 11px; }
+        .nav-count { background: rgba(0,0,0,0.15); padding: 2px 8px; border-radius: 20px; font-size: 11px; }
 
         .reward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
         .reward-card-premium { text-align: center; padding: 24px; display: flex; flex-direction: column; align-items: center; }

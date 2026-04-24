@@ -1,6 +1,6 @@
-# 🏛️ CivicX AI: Next-Generation Governance Terminal
+# 🏛️ CivicX: Next-Generation Governance Terminal
 
-CivicX AI is a state-of-the-art, mobile-first, AI-powered civic engagement platform designed for the modern smart city. It merges deep technical intelligence with premium, startup-level aesthetics to bridge the gap between citizens and municipal authorities.
+CivicX is a state-of-the-art, mobile-first, AI-powered civic engagement platform designed for the modern smart city. It merges deep technical intelligence with premium, startup-level aesthetics to bridge the gap between citizens and municipal authorities.
 
 ## 🚀 Key Innovation Pillars
 
@@ -78,4 +78,5 @@ npm run dev
 *   **Robust JSON Parsing**: Advanced error handling for AI responses to prevent system fallbacks.
 
 ---
-**CivicX AI** — *Empowering the pulse of the city through intelligence.*
+**CivicX** — *Empowering the pulse of the city through intelligence.*
+

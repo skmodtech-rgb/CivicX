@@ -2,7 +2,7 @@ require('dotenv').config();
 const { analyzeComplaint } = require('../server/services/aiEngine');
 
 async function runDiagnostics() {
-  console.log('\n🧠 CivicX AI Engine — Diagnostics\n');
+  console.log('\n🧠 CivicX Engine — Diagnostics\n');
   console.log('─'.repeat(50));
 
   const testCases = [
@@ -42,3 +42,4 @@ async function runDiagnostics() {
 }
 
 runDiagnostics();
+

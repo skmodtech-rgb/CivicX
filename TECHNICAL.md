@@ -1,6 +1,6 @@
-# 🧠 CivicX AI: Technical Architecture & Logic Blueprint
+# 🧠 CivicX: Technical Architecture & Logic Blueprint
 
-This document specifies the internal logic, database structures, and AI configurations of the CivicX AI platform. Use this as the "Brain" to compliment the "Body" (DESIGN.md).
+This document specifies the internal logic, database structures, and AI configurations of the CivicX platform. Use this as the "Brain" to compliment the "Body" (DESIGN.md).
 
 ---
 
@@ -139,4 +139,5 @@ Uses the browser's `Web Speech API`:
 
 ---
 
-**CivicX AI Technical Stack** — *The logical heart of next-gen governance.*
+**CivicX Technical Stack** — *The logical heart of next-gen governance.*
+

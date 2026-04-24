@@ -267,7 +267,7 @@ export default function MapView() {
       {/* Main Map Container */}
       <div style={{ flex: 1, minHeight: '400px', borderRadius: 16, overflow: 'hidden', border: `2px solid ${filters.emergencyOnly ? '#EF4444' : 'var(--color-border)'}`, position: 'relative', display: 'flex', flexDirection: 'column' }}>
         <MapContainer center={defaultCenter} zoom={13} style={{ flex: 1, width: '100%', minHeight: '400px' }} zoomControl={false}>
-          <TileLayer url={TILE_LAYERS[layer].url} attribution="CivicX AI" />
+          <TileLayer url={TILE_LAYERS[layer].url} attribution="CivicX" />
           <MapController position={flyTo} />
           <MapEvents setClickPos={setClickPos} />
 
@@ -454,3 +454,4 @@ export default function MapView() {
     </div>
   );
 }
+

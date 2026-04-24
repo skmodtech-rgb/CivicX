@@ -1,11 +1,11 @@
-# 🌐 CivicX AI: Strategic Context & Vision Blueprint
+# 🌐 CivicX: Strategic Context & Vision Blueprint
 
-This document provides the high-level vision, mission, and "soul" of the CivicX AI platform. It is designed to help AI agents understand the *intent* behind the features and maintain a consistent brand voice.
+This document provides the high-level vision, mission, and "soul" of the CivicX platform. It is designed to help AI agents understand the *intent* behind the features and maintain a consistent brand voice.
 
 ---
 
 ## 🎯 1. The Core Mission
-CivicX AI exists to transform the relationship between a city and its citizens. We believe that **Civic Engagement should be a Premium Experience**, not a bureaucratic chore. 
+CivicX exists to transform the relationship between a city and its citizens. We believe that **Civic Engagement should be a Premium Experience**, not a bureaucratic chore. 
 
 By merging **Generative AI** with **Gamified Rewards**, we bridge the "Transparency Gap" that often exists in urban governance.
 
@@ -46,7 +46,7 @@ By merging **Generative AI** with **Gamified Rewards**, we bridge the "Transpare
 
 ## 🚀 5. Problem vs. Solution
 
-| Traditional Reporting | CivicX AI Solution |
+| Traditional Reporting | CivicX Solution |
 | :--- | :--- |
 | **Opaque**: "Where is my complaint?" | **Transparent**: Live dossier tracking and AI resolution hints. |
 | **Slow**: Manual sorting takes days. | **Instant**: AI classifies and routes issues in milliseconds. |
@@ -62,4 +62,5 @@ By merging **Generative AI** with **Gamified Rewards**, we bridge the "Transpare
 
 ---
 
-**CivicX AI** — *Governance, Reimagined through Intelligence.*
+**CivicX** — *Governance, Reimagined through Intelligence.*
+

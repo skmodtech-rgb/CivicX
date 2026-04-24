@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 
 // ─── Root Message ────────────────────────────────────────
 app.get('/', (req, res) => {
-  res.send('<h1>🏛️ CivicX AI API</h1><p>Status: Operational</p><p>Health Check: <a href="/api/health">/api/health</a></p>');
+  res.send('<h1>🏛️ CivicX API</h1><p>Status: Operational</p><p>Health Check: <a href="/api/health">/api/health</a></p>');
 });
 
 // ─── Security ────────────────────────────────────────────
@@ -53,7 +53,7 @@ app.use('/api/official', require('./routes/official'));
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'operational',
-    service: 'CivicX AI Backend',
+    service: 'CivicX Backend',
     version: '2.0.0',
     timestamp: new Date().toISOString()
   });
@@ -103,7 +103,7 @@ async function startServer() {
       console.log('   Set MONGODB_URI in server/.env to connect to MongoDB.');
 
       app.listen(PORT, () => {
-        console.log(`\n🏛️  CivicX AI Backend (Demo Mode)`);
+        console.log(`\n🏛️  CivicX Backend (Demo Mode)`);
         console.log(`   Port: ${PORT}`);
         console.log(`   Status: http://localhost:${PORT}/api/health\n`);
       });
@@ -116,7 +116,7 @@ async function startServer() {
     await seedAdmin();
 
     app.listen(PORT, () => {
-      console.log(`\n🏛️  CivicX AI Backend v2.0`);
+      console.log(`\n🏛️  CivicX Backend v2.0`);
       console.log(`   Port: ${PORT}`);
       console.log(`   Database: Connected`);
       console.log(`   AI Engine: Gemini 2.5 Flash`);
@@ -129,3 +129,4 @@ async function startServer() {
 }
 
 startServer();
+

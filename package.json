@@ -1,7 +1,7 @@
 {
   "name": "civicx-ai",
   "version": "2.0.0",
-  "description": "CivicX AI — Next-Generation Governance Terminal",
+  "description": "CivicX — Next-Generation Governance Terminal",
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -13,3 +13,4 @@
     "concurrently": "^9.1.0"
   }
 }
+
